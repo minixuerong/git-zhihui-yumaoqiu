@@ -25,3 +25,6 @@ dist/
 # OS
 Thumbs.db
 .DS_Store
+
+# Uploads（用户上传的简历文件）
+backend/uploads/
