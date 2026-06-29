@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简历智能解析 - 人才能力大脑</title>
+    <link rel="stylesheet" href="assets/sidebar.css">
+    <script src="assets/auth.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: #ffffff;
+            color: #1a1a1a;
+            min-height: 100vh;
+        }
+        
+        .main {
+            margin-left: 220px;
+            min-height: 100vh;
+            padding: 30px;
+            transition: margin-left 0.3s ease;
+        }
+        
+        .sidebar.collapsed ~ .main {
+            margin-left: 60px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .header p {
+            font-size: 14px;
+            color: #999;
+            margin-top: 4px;
+        }
+        
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f8fafc;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 8px 12px;
+        }
+        
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 14px;
+            color: #1a1a1a;
+            width: 200px;
+        }
+        
+        .search-box input::placeholder {
+            color: #999;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #3b82f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .user-name {
+            font-size: 14px;
+            color: #1a1a1a;
+            font-weight: 500;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: #3b82f6;
+            color: #fff;
+            border-color: #3b82f6;
+        }
+        
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+        
+        .btn-secondary {
+            background: #fff;
+            color: #666;
+        }
+        
+        .btn-secondary:hover {
+            background: #fafafa;
+        }
+        
+        .logout-btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+            background: #fff;
+            color: #666;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .logout-btn:hover {
+            background: #fef2f2;
+            border-color: #fecaca;
+            color: #dc2626;
+        }
+        
+        .upload-zone {
+            border: 2px dashed #e0e0e0;
+            border-radius: 8px;
+            padding: 60px 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #f8fafc;
+            margin-bottom: 32px;
+        }
+        
+        .upload-zone:hover {
+            border-color: #3b82f6;
+            background: #f8fbff;
+        }
+        
+        .upload-zone.dragover {
+            border-color: #3b82f6;
+            background: #f0f7ff;
+        }
+        
+        .upload-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+        
+        .upload-desc {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+        
+        .upload-formats {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+        }
+        
+        .format-badge {
+            padding: 8px 20px;
+            background: #f0f0f0;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .parse-result {
+            display: none;
+        }
+        
+        .parse-result.show {
+            display: block;
+        }
+        
+        .result-header {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .result-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 24px;
+        }
+        
+        .accuracy-card {
+            text-align: center;
+        }
+        
+        .accuracy-header {
+            margin-bottom: 16px;
+        }
+        
+        .accuracy-title {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .accuracy-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #3b82f6;
+            margin: 8px 0;
+        }
+        
+        .accuracy-bar {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        
+        .accuracy-fill {
+            height: 100%;
+            background: #3b82f6;
+            border-radius: 4px;
+        }
+        
+        .accuracy-detail {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+        }
+        
+        .parsed-section {
+            background: #f8fafc;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .parsed-row {
+            display: flex;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .parsed-row:last-child {
+            border-bottom: none;
+        }
+        
+        .parsed-label {
+            width: 100px;
+            font-size: 13px;
+            color: #666;
+            flex-shrink: 0;
+        }
+        
+        .parsed-value {
+            flex: 1;
+            font-size: 14px;
+            color: #1a1a1a;
+        }
+        
+        .tags-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .skill-tag {
+            padding: 6px 14px;
+            background: #e8f0fe;
+            border: 1px solid #dbeafe;
+            border-radius: 16px;
+            font-size: 13px;
+            color: #3b82f6;
+        }
+        
+        .education-item, .experience-item {
+            background: #f8fafc;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        
+        .exp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+        
+        .exp-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .exp-company {
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .exp-time {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .exp-desc {
+            font-size: 13px;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+        
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .skill-item {
+            background: #f8fafc;
+            border-radius: 6px;
+            padding: 12px;
+            text-align: center;
+        }
+        
+        .skill-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+        
+        .skill-level {
+            font-size: 12px;
+            color: #3b82f6;
+        }
+        
+        .skill-bar {
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        
+        .skill-bar-fill {
+            height: 100%;
+            background: #3b82f6;
+            border-radius: 2px;
+        }
+        
+        .multi-resume {
+            margin-top: 32px;
+        }
+        
+        .batch-actions {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            justify-content: flex-end;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .comparison-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 20px;
+        }
+        
+        .comparison-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .comparison-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .comparison-score {
+            padding: 4px 10px;
+            background: #e8f0fe;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #3b82f6;
+        }
+        
+        .comparison-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        
+        .mini-tag {
+            padding: 4px 8px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #666;
+        }
+        
+        .mini-tag.match {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+        
+        .mini-tag.gap {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        @media (max-width: 1024px) {
+            .result-header {
+                grid-template-columns: 1fr;
+            }
+            
+            .skills-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .comparison-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <div class="logo">CAPABILITY<span>.BRAIN</span></div>
+        <nav>
+            <a href="index.html" class="nav-item">
+                <span class="nav-text">我的首页</span>
+            </a>
+            <a href="resume.html" class="nav-item active">
+                <span class="nav-text">上传简历</span>
+            </a>
+            <a href="user-match.html" class="nav-item">
+                <span class="nav-text">匹配分析</span>
+            </a>
+            <a href="user-learning.html" class="nav-item">
+                <span class="nav-text">学习规划</span>
+            </a>
+            <div class="nav-divider"></div>
+            <a href="graph.html" class="nav-item">
+                <span class="nav-text">能力图谱</span>
+            </a>
+            <a href="discovery.html" class="nav-item">
+                <span class="nav-text">岗位发现</span>
+            </a>
+            <a href="update.html" class="nav-item">
+                <span class="nav-text">能力更新</span>
+            </a>
+            <a href="match.html" class="nav-item">
+                <span class="nav-text">人岗匹配</span>
+            </a>
+            <div class="nav-divider"></div>
+            <div class="nav-item">
+                <span class="nav-text">系统设置</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-text">帮助文档</span>
+            </div>
+        </nav>
+        <div class="toggle-btn" onclick="toggleSidebar()"></div>
+    </div>
+    
+    <div class="main">
+        <div class="header">
+            <div>
+                <h1>简历智能解析</h1>
+                <p>支持PDF/Word多格式简历解析，自动提取技能、教育、工作经历等多维度信息</p>
+            </div>
+            <div class="user-info">
+                <div class="search-box">
+                    <input type="text" placeholder="搜索简历...">
+                </div>
+                <span class="user-name">管理员</span>
+                <div class="user-avatar">A</div>
+                <button class="logout-btn" onclick="logout()">退出登录</button>
+            </div>
+        </div>
+        
+        <div class="upload-zone" id="uploadZone">
+            <div class="upload-title">拖拽简历文件到此处</div>
+            <div class="upload-desc">或点击选择文件，支持批量上传多个简历</div>
+            <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">选择文件</button>
+            <input type="file" id="fileInput" multiple accept=".pdf,.docx,.doc" style="display:none;">
+            <div class="upload-formats" style="margin-top: 24px;">
+                <span class="format-badge">PDF</span>
+                <span class="format-badge">DOCX</span>
+                <span class="format-badge">DOC</span>
+            </div>
+        </div>
+        
+        <div class="parse-result" id="parseResult">
+            <div class="result-header">
+                <div class="result-card">
+                    <div class="section-title">解析内容</div>
+                    
+                    <div class="parsed-section">
+                        <div class="parsed-row">
+                            <span class="parsed-label">姓名</span>
+                            <span class="parsed-value">张明</span>
+                        </div>
+                        <div class="parsed-row">
+                            <span class="parsed-label">最高学历</span>
+                            <span class="parsed-value">硕士 · 计算机科学与技术</span>
+                        </div>
+                        <div class="parsed-row">
+                            <span class="parsed-label">毕业院校</span>
+                            <span class="parsed-value">某某大学</span>
+                        </div>
+                        <div class="parsed-row">
+                            <span class="parsed-label">工作年限</span>
+                            <span class="parsed-value">5年</span>
+                        </div>
+                    </div>
+                    
+                    <div class="section-title">工作经历</div>
+                    <div class="experience-item">
+                        <div class="exp-header">
+                            <div>
+                                <div class="exp-title">高级算法工程师</div>
+                                <div class="exp-company">某知名互联网公司</div>
+                            </div>
+                            <span class="exp-time">2021.06 - 至今</span>
+                        </div>
+                        <div class="exp-desc">负责大规模语言模型的研发与优化，主导RAG系统架构设计，提升问答准确率35%。</div>
+                    </div>
+                    <div class="experience-item">
+                        <div class="exp-header">
+                            <div>
+                                <div class="exp-title">算法工程师</div>
+                                <div class="exp-company">某科技公司</div>
+                            </div>
+                            <span class="exp-time">2019.07 - 2021.05</span>
+                        </div>
+                        <div class="exp-desc">负责NLP算法研发，包括文本分类、实体识别等任务，开发智能客服对话系统。</div>
+                    </div>
+                    
+                    <div class="section-title">教育背景</div>
+                    <div class="education-item">
+                        <div class="exp-title">硕士 · 计算机科学与技术</div>
+                        <div class="exp-company">某某大学 · 2016.09 - 2019.06</div>
+                    </div>
+                    <div class="education-item">
+                        <div class="exp-title">学士 · 计算机科学与技术</div>
+                        <div class="exp-company">某某大学 · 2012.09 - 2016.06</div>
+                    </div>
+                </div>
+                
+                <div class="result-card accuracy-card">
+                    <div class="accuracy-header">
+                        <div class="accuracy-title">技能提取准确率</div>
+                        <div class="accuracy-value">94%</div>
+                    </div>
+                    <div class="accuracy-bar">
+                        <div class="accuracy-fill" style="width: 94%"></div>
+                    </div>
+                    <div class="accuracy-detail">基于多源数据交叉验证</div>
+                    
+                    <div class="section-title" style="margin-top: 24px;">提取的技能</div>
+                    <div class="skills-grid">
+                        <div class="skill-item">
+                            <div class="skill-name">Python</div>
+                            <div class="skill-level">精通</div>
+                            <div class="skill-bar"><div class="skill-bar-fill" style="width: 95%"></div></div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-name">PyTorch</div>
+                            <div class="skill-level">熟练</div>
+                            <div class="skill-bar"><div class="skill-bar-fill" style="width: 85%"></div></div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-name">深度学习</div>
+                            <div class="skill-level">熟练</div>
+                            <div class="skill-bar"><div class="skill-bar-fill" style="width: 88%"></div></div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-name">NLP</div>
+                            <div class="skill-level">精通</div>
+                            <div class="skill-bar"><div class="skill-bar-fill" style="width: 92%"></div></div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-name">RAG系统</div>
+                            <div class="skill-level">熟练</div>
+                            <div class="skill-bar"><div class="skill-bar-fill" style="width: 80%"></div></div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-name">LangChain</div>
+                            <div class="skill-level">熟悉</div>
+                            <div class="skill-bar"><div class="skill-bar-fill" style="width: 70%"></div></div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-name">Docker</div>
+                            <div class="skill-level">熟练</div>
+                            <div class="skill-bar"><div class="skill-bar-fill" style="width: 78%"></div></div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-name">MySQL</div>
+                            <div class="skill-level">熟悉</div>
+                            <div class="skill-bar"><div class="skill-bar-fill" style="width: 65%"></div></div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <div class="section-title">技能标签</div>
+                        <div class="tags-wrap">
+                            <span class="skill-tag">Python</span>
+                            <span class="skill-tag">PyTorch</span>
+                            <span class="skill-tag">TensorFlow</span>
+                            <span class="skill-tag">深度学习</span>
+                            <span class="skill-tag">NLP</span>
+                            <span class="skill-tag">RAG</span>
+                            <span class="skill-tag">LangChain</span>
+                            <span class="skill-tag">transformers</span>
+                            <span class="skill-tag">Docker</span>
+                            <span class="skill-tag">Git</span>
+                            <span class="skill-tag">Linux</span>
+                            <span class="skill-tag">MySQL</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="multi-resume">
+                <div class="header" style="margin-bottom: 20px;">
+                    <div>
+                        <h1 style="font-size:20px">批量解析结果</h1>
+                    </div>
+                    <div class="batch-actions">
+                        <button class="btn btn-secondary">导出对比报告</button>
+                        <button class="btn btn-primary">批量人岗匹配</button>
+                    </div>
+                </div>
+                
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <div class="comparison-header">
+                            <span class="comparison-name">张明.pdf</span>
+                            <span class="comparison-score">92% 匹配</span>
+                        </div>
+                        <div class="comparison-skills">
+                            <span class="mini-tag match">Python</span>
+                            <span class="mini-tag match">PyTorch</span>
+                            <span class="mini-tag match">NLP</span>
+                            <span class="mini-tag gap">Agent开发</span>
+                            <span class="mini-tag gap">RAG系统</span>
+                        </div>
+                    </div>
+                    <div class="comparison-card">
+                        <div class="comparison-header">
+                            <span class="comparison-name">李华.docx</span>
+                            <span class="comparison-score">78% 匹配</span>
+                        </div>
+                        <div class="comparison-skills">
+                            <span class="mini-tag match">Java</span>
+                            <span class="mini-tag match">Spring</span>
+                            <span class="mini-tag match">微服务</span>
+                            <span class="mini-tag gap">深度学习</span>
+                            <span class="mini-tag gap">模型训练</span>
+                        </div>
+                    </div>
+                    <div class="comparison-card">
+                        <div class="comparison-header">
+                            <span class="comparison-name">王芳.pdf</span>
+                            <span class="comparison-score">65% 匹配</span>
+                        </div>
+                        <div class="comparison-skills">
+                            <span class="mini-tag match">数据分析</span>
+                            <span class="mini-tag match">SQL</span>
+                            <span class="mini-tag gap">Python</span>
+                            <span class="mini-tag gap">机器学习</span>
+                            <span class="mini-tag gap">AI工具</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const uploadZone = document.getElementById('uploadZone');
+        const fileInput = document.getElementById('fileInput');
+        const parseResult = document.getElementById('parseResult');
+        
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+        
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+        
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+        
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+        
+        function handleFiles(files) {
+            if (files.length > 0) {
+                parseResult.classList.add('show');
+                parseResult.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+        
+        checkAuth();
+        initSidebar();
+    </script>
+</body>
+</html>

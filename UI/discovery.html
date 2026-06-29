@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人才能力大脑 - 新岗位发现</title>
+    <link rel="stylesheet" href="assets/sidebar.css">
+    <script src="assets/auth.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: #ffffff;
+            color: #1a1a1a;
+            min-height: 100vh;
+        }
+        
+        .main {
+            margin-left: 220px;
+            min-height: 100vh;
+            padding: 30px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .header p {
+            font-size: 14px;
+            color: #999;
+            margin-top: 4px;
+        }
+        
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f8fafc;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 8px 12px;
+        }
+        
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 14px;
+            color: #1a1a1a;
+            width: 200px;
+        }
+        
+        .search-box input::placeholder {
+            color: #999;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #3b82f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .user-name {
+            font-size: 14px;
+            color: #1a1a1a;
+            font-weight: 500;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: #3b82f6;
+            color: #fff;
+            border-color: #3b82f6;
+        }
+        
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+        
+        .btn-secondary {
+            background: #fff;
+            color: #666;
+        }
+        
+        .btn-secondary:hover {
+            background: #fafafa;
+        }
+        
+        .logout-btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+            background: #fff;
+            color: #666;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .logout-btn:hover {
+            background: #fef2f2;
+            border-color: #fecaca;
+            color: #dc2626;
+        }
+        
+        .card {
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+        
+        .card-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            background: #fafafa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-header h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        .discovery-form {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .form-label {
+            font-size: 13px;
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .form-input, .form-select {
+            padding: 10px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            background: #fff;
+            color: #1a1a1a;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+        }
+        
+        .form-input:focus, .form-select:focus {
+            border-color: #3b82f6;
+        }
+        
+        .form-input::placeholder {
+            color: #999;
+        }
+        
+        .result-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .jobs-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .job-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 20px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .job-card:hover {
+            border-color: #3b82f6;
+            background: #f8fbff;
+        }
+        
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        
+        .job-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .job-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        
+        .job-badge.new {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+        
+        .job-badge.analysis {
+            background: #e8f0fe;
+            color: #3b82f6;
+        }
+        
+        .job-badge.pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+        
+        .job-desc {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 16px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .job-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+        
+        .job-tag {
+            padding: 4px 10px;
+            background: #f0f0f0;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .job-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        .job-date {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .view-detail {
+            font-size: 12px;
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .view-detail:hover {
+            text-decoration: underline;
+        }
+        
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal {
+            background: #ffffff;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .close-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1px solid #e0e0e0;
+            background: #fafafa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            color: #666;
+            transition: all 0.2s;
+        }
+        
+        .close-btn:hover {
+            background: #f0f0f0;
+        }
+        
+        .modal-body {
+            padding: 24px;
+        }
+        
+        .detail-section {
+            margin-bottom: 24px;
+        }
+        
+        .section-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            display: block;
+        }
+        
+        .detail-desc {
+            font-size: 14px;
+            color: #1a1a1a;
+            line-height: 1.8;
+        }
+        
+        .detail-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .detail-tag {
+            padding: 6px 12px;
+            background: #e8f0fe;
+            border-radius: 16px;
+            font-size: 13px;
+            color: #3b82f6;
+        }
+        
+        .skill-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .skill-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            background: #f8fafc;
+            border-radius: 4px;
+        }
+        
+        .skill-name {
+            font-size: 13px;
+            color: #1a1a1a;
+        }
+        
+        .skill-level {
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .skill-level.high {
+            color: #16a34a;
+        }
+        
+        .skill-level.medium {
+            color: #ea580c;
+        }
+        
+        .skill-level.low {
+            color: #666;
+        }
+        
+        .modal-footer {
+            padding: 20px 24px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        
+        @media (max-width: 1024px) {
+            .discovery-form {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .result-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .jobs-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .discovery-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .result-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .jobs-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <div class="logo">CAPABILITY<span>.BRAIN</span></div>
+        <nav>
+            <a href="index.html" class="nav-item">
+                <span class="nav-text">我的首页</span>
+            </a>
+            <a href="resume.html" class="nav-item">
+                <span class="nav-text">上传简历</span>
+            </a>
+            <a href="user-match.html" class="nav-item">
+                <span class="nav-text">匹配分析</span>
+            </a>
+            <a href="user-learning.html" class="nav-item">
+                <span class="nav-text">学习规划</span>
+            </a>
+            <div class="nav-divider"></div>
+            <a href="graph.html" class="nav-item">
+                <span class="nav-text">能力图谱</span>
+            </a>
+            <a href="discovery.html" class="nav-item active">
+                <span class="nav-text">岗位发现</span>
+            </a>
+            <a href="update.html" class="nav-item">
+                <span class="nav-text">能力更新</span>
+            </a>
+            <a href="match.html" class="nav-item">
+                <span class="nav-text">人岗匹配</span>
+            </a>
+            <div class="nav-divider"></div>
+            <div class="nav-item">
+                <span class="nav-text">系统设置</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-text">帮助文档</span>
+            </div>
+        </nav>
+        <div class="toggle-btn" onclick="toggleSidebar()"></div>
+    </div>
+    
+    <div class="main">
+        <div class="header">
+            <div>
+                <h1>新岗位发现</h1>
+                <p>基于多源数据发现新兴岗位需求</p>
+            </div>
+            <div class="user-info">
+                <div class="search-box">
+                    <input type="text" placeholder="搜索岗位...">
+                </div>
+                <span class="user-name">管理员</span>
+                <div class="user-avatar">A</div>
+                <button class="logout-btn" onclick="logout()">退出登录</button>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3>发现配置</h3>
+                <button class="btn btn-primary" onclick="triggerDiscovery()">开始发现</button>
+            </div>
+            <div class="card-body">
+                <div class="discovery-form">
+                    <div class="form-group">
+                        <label class="form-label">数据源</label>
+                        <select class="form-select">
+                            <option>全部数据源</option>
+                            <option>招聘网站</option>
+                            <option>行业报告</option>
+                            <option>社交媒体</option>
+                            <option>企业内部</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">领域</label>
+                        <select class="form-select">
+                            <option>全部领域</option>
+                            <option>人工智能</option>
+                            <option>大数据</option>
+                            <option>云计算</option>
+                            <option>物联网</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">时间范围</label>
+                        <select class="form-select">
+                            <option>最近7天</option>
+                            <option>最近30天</option>
+                            <option>最近90天</option>
+                            <option>最近半年</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">关键词</label>
+                        <input type="text" class="form-input" placeholder="输入关键词，多个用逗号分隔">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">置信度阈值</label>
+                        <input type="range" class="form-input" min="0" max="100" value="70" style="padding:0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">结果数量</label>
+                        <input type="number" class="form-input" placeholder="10" value="10">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="result-stats">
+            <div class="stat-item">
+                <div class="stat-value">28</div>
+                <div class="stat-label">新发现岗位</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">89%</div>
+                <div class="stat-label">平均置信度</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">1,256</div>
+                <div class="stat-label">数据源记录</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">15</div>
+                <div class="stat-label">待审核</div>
+            </div>
+        </div>
+        
+        <div class="jobs-grid">
+            <div class="job-card" onclick="openDetailModal(1)">
+                <div class="job-header">
+                    <h3 class="job-title">AI 应用工程师</h3>
+                    <span class="job-badge new">新发现</span>
+                </div>
+                <p class="job-desc">负责将人工智能技术应用于实际业务场景，包括模型部署、优化和集成。</p>
+                <div class="job-tags">
+                    <span class="job-tag">Python</span>
+                    <span class="job-tag">TensorFlow</span>
+                    <span class="job-tag">部署</span>
+                </div>
+                <div class="job-footer">
+                    <span class="job-date">2024-01-15</span>
+                    <a href="#" class="view-detail">查看详情 →</a>
+                </div>
+            </div>
+            
+            <div class="job-card" onclick="openDetailModal(2)">
+                <div class="job-header">
+                    <h3 class="job-title">数据治理专家</h3>
+                    <span class="job-badge analysis">分析中</span>
+                </div>
+                <p class="job-desc">负责企业数据资产的规划、管理和质量控制，确保数据的准确性和合规性。</p>
+                <div class="job-tags">
+                    <span class="job-tag">数据治理</span>
+                    <span class="job-tag">SQL</span>
+                    <span class="job-tag">元数据</span>
+                </div>
+                <div class="job-footer">
+                    <span class="job-date">2024-01-14</span>
+                    <a href="#" class="view-detail">查看详情 →</a>
+                </div>
+            </div>
+            
+            <div class="job-card" onclick="openDetailModal(3)">
+                <div class="job-header">
+                    <h3 class="job-title">云原生架构师</h3>
+                    <span class="job-badge new">新发现</span>
+                </div>
+                <p class="job-desc">设计和实施云原生应用架构，包括容器化、微服务和DevOps实践。</p>
+                <div class="job-tags">
+                    <span class="job-tag">Kubernetes</span>
+                    <span class="job-tag">Docker</span>
+                    <span class="job-tag">Go</span>
+                </div>
+                <div class="job-footer">
+                    <span class="job-date">2024-01-13</span>
+                    <a href="#" class="view-detail">查看详情 →</a>
+                </div>
+            </div>
+            
+            <div class="job-card" onclick="openDetailModal(4)">
+                <div class="job-header">
+                    <h3 class="job-title">大模型训练工程师</h3>
+                    <span class="job-badge pending">待审核</span>
+                </div>
+                <p class="job-desc">负责大型语言模型的训练、微调与优化，提升模型性能和效果。</p>
+                <div class="job-tags">
+                    <span class="job-tag">PyTorch</span>
+                    <span class="job-tag">分布式训练</span>
+                    <span class="job-tag">NLP</span>
+                </div>
+                <div class="job-footer">
+                    <span class="job-date">2024-01-12</span>
+                    <a href="#" class="view-detail">查看详情 →</a>
+                </div>
+            </div>
+            
+            <div class="job-card" onclick="openDetailModal(5)">
+                <div class="job-header">
+                    <h3 class="job-title">RPA 开发工程师</h3>
+                    <span class="job-badge new">新发现</span>
+                </div>
+                <p class="job-desc">开发和维护机器人流程自动化解决方案，提升业务流程效率。</p>
+                <div class="job-tags">
+                    <span class="job-tag">自动化</span>
+                    <span class="job-tag">Python</span>
+                    <span class="job-tag">流程优化</span>
+                </div>
+                <div class="job-footer">
+                    <span class="job-date">2024-01-11</span>
+                    <a href="#" class="view-detail">查看详情 →</a>
+                </div>
+            </div>
+            
+            <div class="job-card" onclick="openDetailModal(6)">
+                <div class="job-header">
+                    <h3 class="job-title">隐私计算工程师</h3>
+                    <span class="job-badge analysis">分析中</span>
+                </div>
+                <p class="job-desc">研究和实现隐私保护计算技术，包括联邦学习、安全多方计算等。</p>
+                <div class="job-tags">
+                    <span class="job-tag">隐私计算</span>
+                    <span class="job-tag">联邦学习</span>
+                    <span class="job-tag">密码学</span>
+                </div>
+                <div class="job-footer">
+                    <span class="job-date">2024-01-10</span>
+                    <a href="#" class="view-detail">查看详情 →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">岗位详情</h3>
+                <button class="close-btn" onclick="closeDetailModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-section">
+                    <span class="section-label">岗位名称</span>
+                    <h2 style="font-size:20px;color:#1a1a1a">AI 应用工程师</h2>
+                </div>
+                
+                <div class="detail-section">
+                    <span class="section-label">岗位描述</span>
+                    <p class="detail-desc">负责将人工智能技术应用于实际业务场景，包括模型部署、优化和集成。与业务团队紧密合作，理解业务需求并提供AI解决方案。</p>
+                </div>
+                
+                <div class="detail-section">
+                    <span class="section-label">所属领域</span>
+                    <div class="detail-tags">
+                        <span class="detail-tag">人工智能</span>
+                        <span class="detail-tag">机器学习</span>
+                        <span class="detail-tag">模型部署</span>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <span class="section-label">核心技能要求</span>
+                    <div class="skill-grid">
+                        <div class="skill-item">
+                            <span class="skill-name">Python</span>
+                            <span class="skill-level high">高级</span>
+                        </div>
+                        <div class="skill-item">
+                            <span class="skill-name">TensorFlow/PyTorch</span>
+                            <span class="skill-level high">高级</span>
+                        </div>
+                        <div class="skill-item">
+                            <span class="skill-name">模型部署</span>
+                            <span class="skill-level medium">中级</span>
+                        </div>
+                        <div class="skill-item">
+                            <span class="skill-name">Linux</span>
+                            <span class="skill-level medium">中级</span>
+                        </div>
+                        <div class="skill-item">
+                            <span class="skill-name">Docker</span>
+                            <span class="skill-level medium">中级</span>
+                        </div>
+                        <div class="skill-item">
+                            <span class="skill-name">RESTful API</span>
+                            <span class="skill-level low">初级</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <span class="section-label">置信度</span>
+                    <div style="height:8px;background:#e0e0e0;border-radius:4px;overflow:hidden">
+                        <div style="height:100%;width:89%;background:#3b82f6;border-radius:4px"></div>
+                    </div>
+                    <div style="text-align:right;margin-top:4px;font-size:13px;color:#3b82f6;font-weight:600">89%</div>
+                </div>
+                
+                <div class="detail-section">
+                    <span class="section-label">发现来源</span>
+                    <p class="detail-desc">招聘网站 (智联招聘、拉勾网)、行业报告 (艾瑞咨询、IDC)</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeDetailModal()">取消</button>
+                <button class="btn btn-primary">确认添加</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        checkAuth();
+        
+        function triggerDiscovery() {
+            alert('正在触发新岗位发现分析...');
+        }
+        
+        function openDetailModal(id) {
+            document.getElementById('detailModal').classList.add('active');
+        }
+        
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.remove('active');
+        }
+        
+        initSidebar();
+    </script>
+</body>
+</html>

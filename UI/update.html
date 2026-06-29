@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>能力动态更新 - 人才能力大脑</title>
+    <link rel="stylesheet" href="assets/sidebar.css">
+    <script src="assets/auth.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: #ffffff;
+            color: #1a1a1a;
+            min-height: 100vh;
+        }
+        
+        .main {
+            margin-left: 220px;
+            min-height: 100vh;
+            padding: 30px;
+            transition: margin-left 0.3s ease;
+        }
+        
+        .sidebar.collapsed ~ .main {
+            margin-left: 60px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .header p {
+            font-size: 14px;
+            color: #999;
+            margin-top: 4px;
+        }
+        
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f8fafc;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 8px 12px;
+        }
+        
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 14px;
+            color: #1a1a1a;
+            width: 200px;
+        }
+        
+        .search-box input::placeholder {
+            color: #999;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #3b82f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .user-name {
+            font-size: 14px;
+            color: #1a1a1a;
+            font-weight: 500;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: #3b82f6;
+            color: #fff;
+            border-color: #3b82f6;
+        }
+        
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+        
+        .btn-secondary {
+            background: #fff;
+            color: #666;
+        }
+        
+        .btn-secondary:hover {
+            background: #fafafa;
+        }
+        
+        .logout-btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+            background: #fff;
+            color: #666;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .logout-btn:hover {
+            background: #fef2f2;
+            border-color: #fecaca;
+            color: #dc2626;
+        }
+        
+        .update-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .stat-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .stat-value.add { color: #16a34a; }
+        .stat-value.remove { color: #dc2626; }
+        .stat-value.modify { color: #ea580c; }
+        
+        .card {
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+        
+        .card-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            background: #fafafa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-header h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        .search-wrap {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+            outline: none;
+        }
+        
+        .search-input:focus {
+            border-color: #3b82f6;
+        }
+        
+        .update-list {
+            display: grid;
+            gap: 16px;
+        }
+        
+        .update-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 20px;
+            transition: all 0.2s;
+        }
+        
+        .update-card:hover {
+            border-color: #3b82f6;
+        }
+        
+        .update-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .job-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .update-time {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .update-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        
+        .update-badge.pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+        
+        .update-badge.approved {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+        
+        .update-badge.new {
+            background: #e8f0fe;
+            color: #3b82f6;
+        }
+        
+        .changes-list {
+            display: grid;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        
+        .change-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            background: #f8fafc;
+            border-radius: 4px;
+        }
+        
+        .change-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .change-icon.add {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+        
+        .change-icon.remove {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        
+        .change-icon.modify {
+            background: #fef3c7;
+            color: #ea580c;
+        }
+        
+        .change-content {
+            flex: 1;
+        }
+        
+        .change-skill {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+        
+        .change-detail {
+            font-size: 12px;
+            color: #666;
+            margin-top: 2px;
+        }
+        
+        .source-ref {
+            font-size: 11px;
+            color: #999;
+            padding: 4px 8px;
+            background: #f0f0f0;
+            border-radius: 4px;
+        }
+        
+        .update-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+        
+        .compare-section {
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 24px;
+            margin-top: 24px;
+        }
+        
+        .compare-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .compare-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .compare-version {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .compare-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        
+        .compare-col {
+            background: #f8fafc;
+            border-radius: 6px;
+            padding: 16px;
+        }
+        
+        .compare-title {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+        
+        .skill-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .skill-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            background: #fff;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #1a1a1a;
+        }
+        
+        .skill-item.new {
+            background: #dcfce7;
+            border-left: 3px solid #16a34a;
+        }
+        
+        .skill-item.removed {
+            background: #fee2e2;
+            border-left: 3px solid #dc2626;
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+        
+        .skill-item.modified {
+            background: #fef3c7;
+            border-left: 3px solid #ea580c;
+        }
+        
+        .timeline-section {
+            margin-top: 32px;
+        }
+        
+        .timeline-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 24px;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e0e0e0;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-bottom: 24px;
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            left: -18px;
+            top: 4px;
+            width: 12px;
+            height: 12px;
+            background: #3b82f6;
+            border-radius: 50%;
+            border: 2px solid #fff;
+        }
+        
+        .timeline-content {
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 16px;
+        }
+        
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .timeline-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .timeline-date {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .timeline-desc {
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .timeline-changes {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .change-tag {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+        
+        .change-tag.add { background: #dcfce7; color: #16a34a; }
+        .change-tag.remove { background: #fee2e2; color: #dc2626; }
+        .change-tag.modify { background: #fef3c7; color: #ea580c; }
+
+        @media (max-width: 1024px) {
+            .update-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .compare-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <div class="logo">CAPABILITY<span>.BRAIN</span></div>
+        <nav>
+            <a href="index.html" class="nav-item">
+                <span class="nav-text">我的首页</span>
+            </a>
+            <a href="resume.html" class="nav-item">
+                <span class="nav-text">上传简历</span>
+            </a>
+            <a href="user-match.html" class="nav-item">
+                <span class="nav-text">匹配分析</span>
+            </a>
+            <a href="user-learning.html" class="nav-item">
+                <span class="nav-text">学习规划</span>
+            </a>
+            <div class="nav-divider"></div>
+            <a href="graph.html" class="nav-item">
+                <span class="nav-text">能力图谱</span>
+            </a>
+            <a href="discovery.html" class="nav-item">
+                <span class="nav-text">岗位发现</span>
+            </a>
+            <a href="update.html" class="nav-item active">
+                <span class="nav-text">能力更新</span>
+            </a>
+            <a href="match.html" class="nav-item">
+                <span class="nav-text">人岗匹配</span>
+            </a>
+            <div class="nav-divider"></div>
+            <div class="nav-item">
+                <span class="nav-text">系统设置</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-text">帮助文档</span>
+            </div>
+        </nav>
+        <div class="toggle-btn" onclick="toggleSidebar()"></div>
+    </div>
+    
+    <div class="main">
+        <div class="header">
+            <div>
+                <h1>能力动态更新</h1>
+                <p>识别现有岗位能力要求的变化，追踪技能演变趋势</p>
+            </div>
+            <div class="user-info">
+                <div class="search-box">
+                    <input type="text" placeholder="搜索岗位名称...">
+                </div>
+                <span class="user-name">管理员</span>
+                <div class="user-avatar">A</div>
+                <button class="logout-btn" onclick="logout()">退出登录</button>
+            </div>
+        </div>
+        
+        <div class="update-stats">
+            <div class="stat-card">
+                <div class="stat-label">本月新增技能</div>
+                <div class="stat-value add">+42</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">本月删除技能</div>
+                <div class="stat-value remove">-18</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">本月修改技能</div>
+                <div class="stat-value modify">~56</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">待审核更新</div>
+                <div class="stat-value" style="color: #ea580c;">23</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3>搜索更新记录</h3>
+            </div>
+            <div class="card-body">
+                <div class="search-wrap">
+                    <input type="text" class="search-input" placeholder="搜索岗位名称，如 Java开发工程师">
+                    <button class="btn btn-primary">搜索</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3>待审核能力更新</h3>
+            </div>
+            <div class="card-body">
+                <div class="update-list">
+                    <div class="update-card">
+                        <div class="update-header">
+                            <span class="job-name">Java开发工程师</span>
+                            <span class="update-time">2024-01-15 10:30</span>
+                        </div>
+                        <span class="update-badge pending">待审核</span>
+                        
+                        <div class="changes-list">
+                            <div class="change-item">
+                                <div class="change-icon add">+</div>
+                                <div class="change-content">
+                                    <div class="change-skill">Spring AI</div>
+                                    <div class="change-detail">大模型集成能力成为主流需求</div>
+                                </div>
+                                <span class="source-ref">来源: 拉勾网 89条</span>
+                            </div>
+                            
+                            <div class="change-item">
+                                <div class="change-icon add">+</div>
+                                <div class="change-content">
+                                    <div class="change-skill">RAG检索增强</div>
+                                    <div class="change-detail">向量数据库与Java技术栈结合</div>
+                                </div>
+                                <span class="source-ref">来源: Boss直聘 56条</span>
+                            </div>
+                            
+                            <div class="change-item">
+                                <div class="change-icon modify">~</div>
+                                <div class="change-content">
+                                    <div class="change-skill">微服务架构</div>
+                                    <div class="change-detail">要求从"了解"提升至"精通"</div>
+                                </div>
+                                <span class="source-ref">来源: 智联招聘 124条</span>
+                            </div>
+                            
+                            <div class="change-item">
+                                <div class="change-icon remove">-</div>
+                                <div class="change-content">
+                                    <div class="change-skill">Struts2</div>
+                                    <div class="change-detail">已被市场淘汰的技术</div>
+                                </div>
+                                <span class="source-ref">来源: 历史数据分析</span>
+                            </div>
+                        </div>
+                        
+                        <div class="update-actions">
+                            <button class="btn btn-secondary btn-sm">查看详情</button>
+                            <button class="btn btn-secondary btn-sm">查看原文</button>
+                            <button class="btn btn-primary btn-sm">全部通过</button>
+                        </div>
+                    </div>
+                    
+                    <div class="update-card">
+                        <div class="update-header">
+                            <span class="job-name">前端开发工程师</span>
+                            <span class="update-time">2024-01-14 16:20</span>
+                        </div>
+                        <span class="update-badge new">新增岗位方向</span>
+                        
+                        <div class="changes-list">
+                            <div class="change-item">
+                                <div class="change-icon add">+</div>
+                                <div class="change-content">
+                                    <div class="change-skill">AI辅助编程</div>
+                                    <div class="change-detail">Copilot等AI工具使用能力</div>
+                                </div>
+                                <span class="source-ref">来源: 脉脉 78条</span>
+                            </div>
+                            
+                            <div class="change-item">
+                                <div class="change-icon add">+</div>
+                                <div class="change-content">
+                                    <div class="change-skill">低代码平台</div>
+                                    <div class="change-detail">企业数字化转型需求</div>
+                                </div>
+                                <span class="source-ref">来源: 猎聘网 45条</span>
+                            </div>
+                        </div>
+                        
+                        <div class="update-actions">
+                            <button class="btn btn-secondary btn-sm">查看详情</button>
+                            <button class="btn btn-primary btn-sm">审核确认</button>
+                        </div>
+                    </div>
+                    
+                    <div class="update-card">
+                        <div class="update-header">
+                            <span class="job-name">数据分析师</span>
+                            <span class="update-time">2024-01-13 09:45</span>
+                        </div>
+                        <span class="update-badge approved">已审核 · 通过</span>
+                        
+                        <div class="changes-list">
+                            <div class="change-item">
+                                <div class="change-icon add">+</div>
+                                <div class="change-content">
+                                    <div class="change-skill">Prompt工程</div>
+                                    <div class="change-detail">LLM时代新要求</div>
+                                </div>
+                                <span class="source-ref">来源: 多源验证</span>
+                            </div>
+                            
+                            <div class="change-item">
+                                <div class="change-icon modify">~</div>
+                                <div class="change-content">
+                                    <div class="change-skill">SQL能力</div>
+                                    <div class="change-detail">要求提升至"熟练"级别</div>
+                                </div>
+                                <span class="source-ref">来源: 智联招聘 156条</span>
+                            </div>
+                        </div>
+                        
+                        <div class="update-actions">
+                            <button class="btn btn-secondary btn-sm">查看详情</button>
+                            <button class="btn btn-secondary btn-sm">查看图谱</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="compare-section">
+            <div class="compare-header">
+                <h3>能力变更对比</h3>
+                <span class="compare-version">Java开发工程师 · v2.3.1 → v2.4.0</span>
+            </div>
+            
+            <div class="compare-grid">
+                <div class="compare-col">
+                    <div class="compare-title">v2.3.1 (旧版)</div>
+                    <div class="skill-list">
+                        <div class="skill-item">Java基础</div>
+                        <div class="skill-item">Spring/SpringMVC</div>
+                        <div class="skill-item">MyBatis/Hibernate</div>
+                        <div class="skill-item">MySQL</div>
+                        <div class="skill-item removed">Struts2</div>
+                        <div class="skill-item">Redis</div>
+                        <div class="skill-item">微服务架构</div>
+                        <div class="skill-item">Kafka/RabbitMQ</div>
+                    </div>
+                </div>
+                <div class="compare-col">
+                    <div class="compare-title">v2.4.0 (新版)</div>
+                    <div class="skill-list">
+                        <div class="skill-item">Java基础</div>
+                        <div class="skill-item">Spring/SpringMVC</div>
+                        <div class="skill-item">MyBatis/Hibernate</div>
+                        <div class="skill-item">MySQL</div>
+                        <div class="skill-item">Redis</div>
+                        <div class="skill-item modified">微服务架构 (要求提升)</div>
+                        <div class="skill-item">Kafka/RabbitMQ</div>
+                        <div class="skill-item new">Spring AI</div>
+                        <div class="skill-item new">RAG检索增强</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="timeline-section">
+            <h3>更新历史</h3>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <span class="timeline-title">Java开发工程师 v2.4.0 发布</span>
+                            <span class="timeline-date">2024-01-15</span>
+                        </div>
+                        <div class="timeline-desc">新增Spring AI、RAG检索增强等AI相关技能要求，微服务架构要求提升</div>
+                        <div class="timeline-changes">
+                            <span class="change-tag add">+2 技能</span>
+                            <span class="change-tag modify">~1 技能</span>
+                            <span class="change-tag remove">-1 技能</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <span class="timeline-title">Java开发工程师 v2.3.1 发布</span>
+                            <span class="timeline-date">2023-12-20</span>
+                        </div>
+                        <div class="timeline-desc">新增Kafka消息队列要求，更新微服务相关技能描述</div>
+                        <div class="timeline-changes">
+                            <span class="change-tag add">+1 技能</span>
+                            <span class="change-tag modify">~1 技能</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <span class="timeline-title">Java开发工程师 v2.3.0 发布</span>
+                            <span class="timeline-date">2023-11-28</span>
+                        </div>
+                        <div class="timeline-desc">Docker容器化成为必备技能，新增Redis高级应用</div>
+                        <div class="timeline-changes">
+                            <span class="change-tag add">+2 技能</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        checkAuth();
+        initSidebar();
+    </script>
+</body>
+</html>

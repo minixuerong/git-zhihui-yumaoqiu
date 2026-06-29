@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>能力全景图 - 人才能力大脑</title>
+    <link rel="stylesheet" href="assets/sidebar.css">
+    <script src="assets/auth.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: #ffffff;
+            color: #1a1a1a;
+            min-height: 100vh;
+        }
+        
+        .main {
+            margin-left: 220px;
+            min-height: 100vh;
+            padding: 30px;
+            transition: margin-left 0.3s ease;
+        }
+        
+        .sidebar.collapsed ~ .main {
+            margin-left: 60px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .header p {
+            font-size: 14px;
+            color: #999;
+            margin-top: 4px;
+        }
+        
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f8fafc;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 8px 12px;
+        }
+        
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 14px;
+            color: #1a1a1a;
+            width: 200px;
+        }
+        
+        .search-box input::placeholder {
+            color: #999;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #3b82f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .user-name {
+            font-size: 14px;
+            color: #1a1a1a;
+            font-weight: 500;
+        }
+        
+        .logout-btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+            background: #fff;
+            color: #666;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .logout-btn:hover {
+            background: #fef2f2;
+            border-color: #fecaca;
+            color: #dc2626;
+        }
+        
+        .filter-bar {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filter-label {
+            font-size: 13px;
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            background: #f8fafc;
+            color: #1a1a1a;
+            font-size: 13px;
+            outline: none;
+            cursor: pointer;
+        }
+        
+        .filter-select:focus {
+            border-color: #3b82f6;
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            background: #f8fafc;
+            color: #666;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .filter-btn:hover {
+            background: #f0f0f0;
+        }
+        
+        .filter-btn.active {
+            background: #e8f0fe;
+            color: #3b82f6;
+            border-color: #dbeafe;
+        }
+        
+        .graph-container {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 24px;
+        }
+        
+        .graph-main {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 24px;
+            min-height: 600px;
+        }
+        
+        .graph-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .graph-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .graph-legend {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        
+        .graph-canvas {
+            position: relative;
+            width: 100%;
+            height: 520px;
+            background: #f8fafc;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .graph-node {
+            position: absolute;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 12px;
+            font-weight: 500;
+            color: #fff;
+            padding: 0 12px;
+            height: 36px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .graph-node:hover {
+            transform: translateY(-2px);
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .graph-node.core {
+            background: #3b82f6;
+            font-size: 14px;
+            padding: 0 20px;
+            height: 44px;
+        }
+        
+        .graph-node.primary {
+            background: #16a34a;
+        }
+        
+        .graph-node.secondary {
+            background: #ea580c;
+        }
+        
+        .graph-node.supporting {
+            background: #64748b;
+            font-size: 11px;
+        }
+        
+        .graph-connection {
+            position: absolute;
+            height: 2px;
+            background: rgba(59, 130, 246, 0.2);
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .detail-panel {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+        }
+        
+        .panel-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+        }
+        
+        .detail-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .detail-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+        
+        .detail-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .detail-category {
+            font-size: 13px;
+            color: #999;
+            margin-top: 4px;
+        }
+        
+        .detail-section {
+            margin-bottom: 20px;
+        }
+        
+        .section-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            display: block;
+        }
+        
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .skill-tag {
+            padding: 6px 12px;
+            background: #f8fafc;
+            border: 1px solid #e0e0e0;
+            border-radius: 16px;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .progress-label {
+            font-size: 13px;
+            color: #1a1a1a;
+        }
+        
+        .progress-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: #3b82f6;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: #f0f0f0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            background: #3b82f6;
+        }
+        
+        .related-jobs {
+            list-style: none;
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .related-job {
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .related-job:hover {
+            background: #e8f0fe;
+        }
+        
+        .job-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+        
+        .job-matches {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+        
+        .category-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .category-tab {
+            padding: 8px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            background: #fff;
+            color: #666;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .category-tab:hover {
+            background: #f8fafc;
+        }
+        
+        .category-tab.active {
+            background: #e8f0fe;
+            color: #3b82f6;
+            border-color: #dbeafe;
+        }
+        
+        .level-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 20px;
+        }
+        
+        .level-tab {
+            padding: 6px 14px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            background: #fff;
+            color: #666;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .level-tab:hover {
+            background: #f8fafc;
+        }
+        
+        .level-tab.active {
+            background: #e8f0fe;
+            color: #3b82f6;
+            border-color: #dbeafe;
+        }
+        
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+        }
+        
+        .skill-card {
+            background: #f8fafc;
+            border-radius: 6px;
+            padding: 14px;
+            border-left: 3px solid #3b82f6;
+        }
+        
+        .skill-card-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 6px;
+        }
+        
+        .skill-card-desc {
+            font-size: 12px;
+            color: #999;
+            line-height: 1.4;
+        }
+        
+        .connections-line {
+            position: absolute;
+            background: rgba(59, 130, 246, 0.15);
+            z-index: 0;
+        }
+
+        @media (max-width: 1024px) {
+            .graph-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .detail-panel {
+                height: auto;
+            }
+            
+            .skills-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <div class="logo">CAPABILITY<span>.BRAIN</span></div>
+        <nav>
+            <a href="index.html" class="nav-item">
+                <span class="nav-text">我的首页</span>
+            </a>
+            <a href="resume.html" class="nav-item">
+                <span class="nav-text">上传简历</span>
+            </a>
+            <a href="user-match.html" class="nav-item">
+                <span class="nav-text">匹配分析</span>
+            </a>
+            <a href="user-learning.html" class="nav-item">
+                <span class="nav-text">学习规划</span>
+            </a>
+            <div class="nav-divider"></div>
+            <a href="graph.html" class="nav-item active">
+                <span class="nav-text">能力图谱</span>
+            </a>
+            <a href="discovery.html" class="nav-item">
+                <span class="nav-text">岗位发现</span>
+            </a>
+            <a href="update.html" class="nav-item">
+                <span class="nav-text">能力更新</span>
+            </a>
+            <a href="match.html" class="nav-item">
+                <span class="nav-text">人岗匹配</span>
+            </a>
+            <div class="nav-divider"></div>
+            <div class="nav-item">
+                <span class="nav-text">系统设置</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-text">帮助文档</span>
+            </div>
+        </nav>
+        <div class="toggle-btn" onclick="toggleSidebar()"></div>
+    </div>
+    
+    <div class="main">
+        <div class="header">
+            <div>
+                <h1>能力全景图</h1>
+                <p>领域级岗位能力全景图谱系统，支持多维度视图切换与交互式浏览</p>
+            </div>
+            <div class="user-info">
+                <div class="search-box">
+                    <input type="text" placeholder="搜索技能、岗位...">
+                </div>
+                <span class="user-name" id="displayName">用户</span>
+                <div class="user-avatar" id="avatar">U</div>
+                <button class="logout-btn" onclick="logout()">退出登录</button>
+            </div>
+        </div>
+        
+        <div class="filter-bar">
+            <div class="filter-group">
+                <span class="filter-label">领域</span>
+                <select class="filter-select" id="domainSelect">
+                    <option value="all">全部领域</option>
+                    <option value="ai">人工智能</option>
+                    <option value="bigdata">大数据</option>
+                    <option value="cloud">云计算</option>
+                    <option value="frontend">前端开发</option>
+                    <option value="backend">后端开发</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <span class="filter-label">技术栈</span>
+                <select class="filter-select" id="techSelect">
+                    <option value="all">全部技术栈</option>
+                    <option value="python">Python</option>
+                    <option value="java">Java</option>
+                    <option value="javascript">JavaScript</option>
+                    <option value="go">Go</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <span class="filter-label">级别</span>
+                <select class="filter-select" id="levelSelect">
+                    <option value="all">全部级别</option>
+                    <option value="junior">初级</option>
+                    <option value="mid">中级</option>
+                    <option value="senior">高级</option>
+                    <option value="expert">专家</option>
+                </select>
+            </div>
+            <div class="filter-group" style="margin-left:auto">
+                <button class="filter-btn" onclick="resetFilters()">重置</button>
+                <button class="filter-btn active" onclick="applyFilters()">应用筛选</button>
+            </div>
+        </div>
+        
+        <div class="graph-container">
+            <div class="graph-main">
+                <div class="graph-header">
+                    <h3 class="graph-title">技能图谱可视化</h3>
+                    <div class="graph-legend">
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background:#3b82f6"></span>
+                            <span>核心技能</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background:#16a34a"></span>
+                            <span>主要技能</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background:#ea580c"></span>
+                            <span>次要技能</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background:#64748b"></span>
+                            <span>支撑技能</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="graph-canvas" id="graphCanvas">
+                    <div class="graph-node core" style="top:40%;left:50%;transform:translate(-50%,-50%)" data-skill="Python">Python</div>
+                    
+                    <div class="graph-node primary" style="top:25%;left:30%" data-skill="机器学习">机器学习</div>
+                    <div class="graph-node primary" style="top:25%;left:70%" data-skill="数据分析">数据分析</div>
+                    <div class="graph-node primary" style="top:55%;left:25%" data-skill="深度学习">深度学习</div>
+                    <div class="graph-node primary" style="top:55%;left:75%" data-skill="自然语言处理">自然语言处理</div>
+                    
+                    <div class="graph-node secondary" style="top:15%;left:20%" data-skill="TensorFlow">TensorFlow</div>
+                    <div class="graph-node secondary" style="top:15%;left:80%" data-skill="PyTorch">PyTorch</div>
+                    <div class="graph-node secondary" style="top:70%;left:15%" data-skill="SQL">SQL</div>
+                    <div class="graph-node secondary" style="top:70%;left:85%" data-skill="Spark">Spark</div>
+                    
+                    <div class="graph-node supporting" style="top:35%;left:10%" data-skill="Java">Java</div>
+                    <div class="graph-node supporting" style="top:35%;left:90%" data-skill="Go">Go</div>
+                    <div class="graph-node supporting" style="top:65%;left:10%" data-skill="Git">Git</div>
+                    <div class="graph-node supporting" style="top:65%;left:90%" data-skill="Docker">Docker</div>
+                    <div class="graph-node supporting" style="top:10%;left:50%" data-skill="HuggingFace">HuggingFace</div>
+                    <div class="graph-node supporting" style="top:80%;left:50%" data-skill="Linux">Linux</div>
+                </div>
+            </div>
+            
+            <div class="detail-panel">
+                <h3 class="panel-title">技能详情</h3>
+                <div id="detailContent">
+                    <div class="detail-header">
+                        <div class="detail-icon" style="background:#e8f0fe;color:#3b82f6">?</div>
+                        <div class="detail-name">选择技能节点</div>
+                        <div class="detail-category">点击图谱中的节点查看详细信息</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="margin-top:32px">
+            <h3 class="panel-title">技能分类浏览</h3>
+            <div class="category-tabs">
+                <div class="category-tab active" onclick="showCategory('ai')">AI/机器学习</div>
+                <div class="category-tab" onclick="showCategory('data')">数据工程</div>
+                <div class="category-tab" onclick="showCategory('cloud')">云计算</div>
+                <div class="category-tab" onclick="showCategory('frontend')">前端开发</div>
+                <div class="category-tab" onclick="showCategory('backend')">后端开发</div>
+                <div class="category-tab" onclick="showCategory('devops')">DevOps</div>
+            </div>
+            
+            <div class="level-tabs">
+                <div class="level-tab active" onclick="showLevel('all')">全部级别</div>
+                <div class="level-tab" onclick="showLevel('junior')">初级</div>
+                <div class="level-tab" onclick="showLevel('mid')">中级</div>
+                <div class="level-tab" onclick="showLevel('senior')">高级</div>
+                <div class="level-tab" onclick="showLevel('expert')">专家</div>
+            </div>
+            
+            <div class="graph-main" style="min-height:auto">
+                <div class="skills-grid" id="skillsGrid">
+                    <div class="skill-card">
+                        <div class="skill-card-name">Python</div>
+                        <div class="skill-card-desc">核心编程语言，广泛应用于数据分析与机器学习</div>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-card-name">TensorFlow</div>
+                        <div class="skill-card-desc">Google开源深度学习框架，支持分布式训练</div>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-card-name">PyTorch</div>
+                        <div class="skill-card-desc">Facebook开源深度学习框架，动态计算图优势</div>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-card-name">机器学习</div>
+                        <div class="skill-card-desc">算法设计与模型训练，监督/无监督学习方法</div>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-card-name">深度学习</div>
+                        <div class="skill-card-desc">神经网络架构设计，CNN/RNN/Transformer等</div>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-card-name">自然语言处理</div>
+                        <div class="skill-card-desc">文本处理与理解，NLP任务与模型应用</div>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-card-name">计算机视觉</div>
+                        <div class="skill-card-desc">图像识别与处理，目标检测与分割技术</div>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-card-name">强化学习</div>
+                        <div class="skill-card-desc">智能决策与优化，策略梯度与Q-learning</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.querySelectorAll('.graph-node').forEach(node => {
+            node.addEventListener('click', function() {
+                const skillName = this.getAttribute('data-skill') || this.textContent;
+                const detailContent = document.getElementById('detailContent');
+                
+                detailContent.innerHTML = `
+                    <div class="detail-header">
+                        <div class="detail-icon" style="background:#e8f0fe;color:#3b82f6">S</div>
+                        <div class="detail-name">${skillName}</div>
+                        <div class="detail-category">AI/机器学习 · 核心技能</div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <span class="section-label">相关技能</span>
+                        <div class="skill-tags">
+                            <span class="skill-tag">Python</span>
+                            <span class="skill-tag">机器学习</span>
+                            <span class="skill-tag">深度学习</span>
+                            <span class="skill-tag">数据处理</span>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <span class="section-label">熟练度等级</span>
+                        <div class="progress-info">
+                            <span class="progress-label">掌握程度</span>
+                            <span class="progress-value">85%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width:85%"></div>
+                        </div>
+                        <div style="font-size:12px;color:#999;margin-top:6px">对应级别：高级</div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <span class="section-label">能力要求强度</span>
+                        <div style="display:flex;gap:4px">
+                            <div style="flex:1;height:20px;background:#e8f0fe;border-radius:2px"></div>
+                            <div style="flex:1;height:20px;background:#e8f0fe;border-radius:2px"></div>
+                            <div style="flex:1;height:20px;background:#e8f0fe;border-radius:2px"></div>
+                            <div style="flex:1;height:20px;background:#3b82f6;border-radius:2px"></div>
+                            <div style="flex:1;height:20px;background:#3b82f6;border-radius:2px"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section" style="flex:1;display:flex;flex-direction:column">
+                        <span class="section-label">匹配岗位</span>
+                        <ul class="related-jobs">
+                            <li class="related-job">
+                                <div class="job-name">AI 算法工程师</div>
+                                <div class="job-matches">匹配度: 92%</div>
+                            </li>
+                            <li class="related-job">
+                                <div class="job-name">数据科学家</div>
+                                <div class="job-matches">匹配度: 88%</div>
+                            </li>
+                            <li class="related-job">
+                                <div class="job-name">机器学习工程师</div>
+                                <div class="job-matches">匹配度: 95%</div>
+                            </li>
+                            <li class="related-job">
+                                <div class="job-name">NLP 工程师</div>
+                                <div class="job-matches">匹配度: 90%</div>
+                            </li>
+                        </ul>
+                    </div>
+                `;
+            });
+        });
+        
+        document.querySelectorAll('.category-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                this.closest('.category-tabs').querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        document.querySelectorAll('.level-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                this.closest('.level-tabs').querySelectorAll('.level-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        function showCategory(category) {
+            document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+        
+        function showLevel(level) {
+            document.querySelectorAll('.level-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+        
+        function resetFilters() {
+            document.getElementById('domainSelect').value = 'all';
+            document.getElementById('techSelect').value = 'all';
+            document.getElementById('levelSelect').value = 'all';
+        }
+        
+        function applyFilters() {
+        }
+        
+        initSidebar();
+        
+        checkAuth();
+        
+        document.getElementById('displayName').textContent = getUsername();
+        document.getElementById('avatar').textContent = getUserAvatar();
+    </script>
+</body>
+</html>
