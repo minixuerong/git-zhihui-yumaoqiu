@@ -31,3 +31,19 @@ export function getResumes(params?: { skip?: number; limit?: number }) {
 export function deleteResume(id: number) {
   return api.delete(`/resumes/${id}`)
 }
+
+/** 匹配分析 */
+export function matchAnalysis(resumeId: number, jobId: number) {
+  return api.post<any, {
+    match_score: number
+    gap_analysis: Array<{
+      skill_id: number
+      skill_name: string
+      current_level: string | null
+      required_level: string
+      gap: string | number
+    }>
+    improvement_suggestions: string[]
+    learning_path: string[]
+  }>('/match/analysis', { resume_id: resumeId, job_id: jobId })
+}
