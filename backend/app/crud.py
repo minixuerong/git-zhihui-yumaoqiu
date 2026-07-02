@@ -34,12 +34,35 @@ def create_user(db: Session, user: schemas.UserCreate) -> models.User:
     hashed_password = get_password_hash(user.password)
     db_user = models.User(
         username=user.username,
-        password_hash=hashed_password
+        password_hash=hashed_password,
+        role=user.role or models.UserRole.user
     )
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
     return db_user
+
+# ===== Admin =====
+
+def get_admin_by_username(db: Session, username: str) -> models.Admin:
+    return db.query(models.Admin).filter(
+        models.Admin.username == username,
+        models.Admin.is_active == True
+    ).first()
+
+def admin_exists(db: Session) -> bool:
+    return db.query(models.Admin).filter(models.Admin.is_active == True).first() is not None
+
+def create_admin(db: Session, username: str, password: str) -> models.Admin:
+    hashed_password = get_password_hash(password)
+    db_admin = models.Admin(
+        username=username,
+        password_hash=hashed_password
+    )
+    db.add(db_admin)
+    db.commit()
+    db.refresh(db_admin)
+    return db_admin
 
 def update_user(db: Session, user_id: int, user_update: schemas.UserUpdate) -> models.User:
     db_user = get_user(db, user_id)

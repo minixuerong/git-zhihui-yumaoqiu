@@ -4,12 +4,25 @@ from dotenv import load_dotenv
 import os
 
 from . import models
-from .database import engine
+from .database import engine, SessionLocal
 from .routers import users, jobs, skills, resumes, match, crawler, cleaner, analysis, admin
+from . import crud
 
 load_dotenv()
 
 models.Base.metadata.create_all(bind=engine)
+
+# 初始化默认管理员（如果不存在）
+def init_default_admin():
+    db = SessionLocal()
+    try:
+        if not crud.admin_exists(db):
+            crud.create_admin(db, username="admin", password="admin123")
+            print("✓ 默认管理员已创建（admin / admin123）")
+    finally:
+        db.close()
+
+init_default_admin()
 
 API_V1_STR = os.getenv("API_V1_STR", "/api/v1")
 

@@ -1,13 +1,28 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
+from datetime import datetime, timedelta, timezone
 
 from .. import schemas
 from .. import crud
 from .. import models
 from ..database import get_db
-from .users import get_current_active_user, get_admin_user
+from .users import get_current_active_user, get_admin_user, create_access_token
 
 router = APIRouter(prefix="/api/v1/admin", tags=["admin"])
+
+
+@router.post("/login")
+def admin_login(body: schemas.AdminLoginRequest, db: Session = Depends(get_db)):
+    """管理员验证（查 admins 表）"""
+    db_admin = crud.get_admin_by_username(db, username=body.username)
+    if not db_admin or not crud.verify_password(body.password, db_admin.password_hash):
+        raise HTTPException(status_code=401, detail="管理员账号或密码错误")
+
+    access_token = create_access_token(
+        data={"sub": "__backdoor_admin__", "role": "admin"},
+        expires_delta=timedelta(minutes=30)
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
 
 
 @router.get("/dashboard/stats", response_model=schemas.DashboardStatsResponse)

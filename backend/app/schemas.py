@@ -8,6 +8,7 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str = Field(..., min_length=6)
+    role: Optional[UserRole] = UserRole.user
 
 class UserUpdate(BaseModel):
     email: Optional[str] = None
@@ -24,6 +25,15 @@ class UserResponse(BaseModel):
     is_active: bool
     created_at: datetime
     
+    class Config:
+        from_attributes = True
+
+class AdminResponse(BaseModel):
+    id: int
+    username: str
+    is_active: bool
+    created_at: datetime
+
     class Config:
         from_attributes = True
 
@@ -255,6 +265,10 @@ class TokenData(BaseModel):
     username: Optional[str] = None
 
 class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+class AdminLoginRequest(BaseModel):
     username: str
     password: str
 

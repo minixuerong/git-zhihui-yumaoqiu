@@ -99,22 +99,29 @@
             </el-button>
           </el-form>
 
-          <div class="divider">
-            <span class="divider-line"></span>
-            <span class="divider-text">或</span>
-            <span class="divider-line"></span>
-          </div>
-
-          <el-button size="large" class="code-login-btn">
-            使用验证码登录
-          </el-button>
-
           <p class="signup-link">
             还没有账号? <a href="javascript:void(0)" @click="registerDialogVisible = true">立即注册</a>
           </p>
         </div>
       </section>
     </div>
+
+    <!-- 管理员通道弹窗 -->
+    <el-dialog v-model="adminDialogVisible" title="管理员通道" width="400px" :close-on-click-modal="false">
+      <el-form ref="adminFormRef" :model="adminForm" :rules="adminRules" label-width="0">
+        <el-form-item prop="username">
+          <el-input v-model="adminForm.username" placeholder="管理员账号" :prefix-icon="User" size="large" />
+        </el-form-item>
+        <el-form-item prop="password">
+          <el-input v-model="adminForm.password" type="password" placeholder="管理员密码" :prefix-icon="Lock" size="large" show-password @keyup.enter="handleAdminLogin" />
+        </el-form-item>
+        <p v-if="adminError" class="admin-error">{{ adminError }}</p>
+      </el-form>
+      <template #footer>
+        <el-button @click="adminDialogVisible = false; adminError = ''">取消</el-button>
+        <el-button type="primary" @click="handleAdminLogin" :loading="adminLoading">验证</el-button>
+      </template>
+    </el-dialog>
 
     <!-- 注册弹窗 -->
     <el-dialog v-model="registerDialogVisible" title="注册账号" width="420px" :close-on-click-modal="false">
@@ -127,6 +134,22 @@
         </el-form-item>
         <el-form-item prop="confirmPassword">
           <el-input v-model="registerForm.confirmPassword" type="password" placeholder="确认密码" :prefix-icon="Lock" size="large" show-password />
+        </el-form-item>
+        <el-form-item prop="role" style="margin-bottom: 0;">
+          <el-radio-group v-model="registerForm.role" class="role-selector">
+            <el-radio value="user" size="large">
+              <div class="role-option">
+                <span class="role-label">求职者</span>
+                <span class="role-desc">浏览岗位、上传简历、匹配分析</span>
+              </div>
+            </el-radio>
+            <el-radio value="hr" size="large">
+              <div class="role-option">
+                <span class="role-label">招聘者</span>
+                <span class="role-desc">发布岗位、管理招聘、筛选简历</span>
+              </div>
+            </el-radio>
+          </el-radio-group>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -170,7 +193,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { User, Lock } from '@element-plus/icons-vue'
 import type { FormInstance, FormRules } from 'element-plus'
@@ -187,8 +210,8 @@ const errorMsg = ref('')
 const rememberMe = ref(true)
 
 const loginForm = reactive({
-  username: 'admin',
-  password: 'password'
+  username: '',
+  password: ''
 })
 
 const loginRules: FormRules = {
@@ -203,7 +226,8 @@ const registerFormRef = ref<FormInstance>()
 const registerForm = reactive({
   username: '',
   password: '',
-  confirmPassword: ''
+  confirmPassword: '',
+  role: 'user'
 })
 const registerRules: FormRules = {
   username: [
@@ -237,7 +261,8 @@ async function handleRegister() {
   try {
     await api.post('/users/register', {
       username: registerForm.username,
-      password: registerForm.password
+      password: registerForm.password,
+      role: registerForm.role
     })
     ElMessage.success('注册成功，请登录')
     registerDialogVisible.value = false
@@ -245,12 +270,61 @@ async function handleRegister() {
     registerForm.username = ''
     registerForm.password = ''
     registerForm.confirmPassword = ''
+    registerForm.role = 'user'
   } catch (err: any) {
     ElMessage.error(err?.response?.data?.detail || '注册失败')
   } finally {
     registerLoading.value = false
   }
 }
+
+// ===== 管理员隐藏入口 =====
+const adminDialogVisible = ref(false)
+const adminLoading = ref(false)
+const adminError = ref('')
+const adminFormRef = ref<FormInstance>()
+const adminForm = reactive({
+  username: '',
+  password: ''
+})
+const adminRules: FormRules = {
+  username: [{ required: true, message: '请输入管理员账号', trigger: 'blur' }],
+  password: [{ required: true, message: '请输入管理员密码', trigger: 'blur' }]
+}
+
+async function handleAdminLogin() {
+  const valid = await adminFormRef.value?.validate().catch(() => false)
+  if (!valid) return
+
+  adminLoading.value = true
+  adminError.value = ''
+  try {
+    const res: any = await api.post('/admin/login', {
+      username: adminForm.username,
+      password: adminForm.password
+    })
+    const token = res.access_token
+    userStore.setUser({
+      id: 0,
+      username: 'admin',
+      role: 'admin',
+      token: token
+    })
+    adminDialogVisible.value = false
+    router.push('/admin')
+  } catch (err: any) {
+    adminError.value = err.response?.data?.detail || '验证失败，请重试'
+    adminForm.password = ''
+  } finally {
+    adminLoading.value = false
+  }
+}
+
+onMounted(() => {
+  if (window.location.pathname === '/login/admin') {
+    adminDialogVisible.value = true
+  }
+})
 
 async function handleLogin() {
   const valid = await formRef.value?.validate().catch(() => false)
@@ -263,6 +337,8 @@ async function handleLogin() {
     await userStore.login(loginForm.username, loginForm.password)
     if (userStore.isAdmin) {
       router.push('/admin')
+    } else if (userStore.user?.role === 'hr') {
+      router.push('/hr')
     } else {
       router.push('/user')
     }
@@ -500,39 +576,6 @@ async function handleLogin() {
   background: linear-gradient(135deg, #2563eb 0%, #0284c7 100%);
 }
 
-.code-login-btn {
-  width: 100%;
-  height: 48px;
-  font-size: 15px;
-  border-radius: 8px;
-  background: #f1f5f9;
-  color: #0f172a;
-  border: 1px solid #e2e8f0;
-}
-
-.code-login-btn:hover {
-  background: #e2e8f0;
-}
-
-.divider {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin: 24px 0;
-}
-
-.divider-line {
-  flex: 1;
-  height: 1px;
-  background: #e2e8f0;
-}
-
-.divider-text {
-  font-size: 12px;
-  color: #94a3b8;
-  white-space: nowrap;
-}
-
 .signup-link {
   text-align: center;
   margin-top: 24px;
@@ -550,6 +593,45 @@ async function handleLogin() {
   text-decoration: underline;
 }
 
+.role-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.role-selector .el-radio {
+  width: 100%;
+  height: auto;
+  margin-right: 0;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px 16px;
+  transition: all 0.2s;
+}
+
+.role-selector .el-radio.is-checked {
+  border-color: #3b82f6;
+  background: #f8faff;
+}
+
+.role-option {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.role-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.role-desc {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
 .error-message {
   display: none;
   padding: 12px;
@@ -563,6 +645,16 @@ async function handleLogin() {
 
 .error-message.show {
   display: block;
+}
+
+.admin-error {
+  padding: 8px 12px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 6px;
+  font-size: 13px;
+  color: #dc2626;
+  margin: 0;
 }
 
 /* 覆盖 Element Plus 输入框样式 */

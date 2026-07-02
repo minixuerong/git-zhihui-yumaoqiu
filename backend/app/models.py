@@ -7,6 +7,7 @@ import enum
 class UserRole(str, enum.Enum):
     admin = "admin"
     user = "user"
+    hr = "hr"
 
 class JobStatus(str, enum.Enum):
     draft = "draft"
@@ -59,6 +60,16 @@ class User(Base):
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
     
     resumes = relationship("Resume", back_populates="uploader")
+
+class Admin(Base):
+    __tablename__ = "admins"
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    username = Column(String(100), nullable=False, unique=True, index=True)
+    password_hash = Column(String(255), nullable=False)
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, server_default=func.now())
+    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
 
 class JobCategory(Base):
     __tablename__ = "job_categories"

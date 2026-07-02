@@ -244,75 +244,137 @@ jd_data_sources ───< crawl_tasks
 
 ### 用户认证 `/api/v1/users`
 
-| 方法 | 接口 | 说明 |
-|------|------|------|
-| POST | /users/register | 注册（用户名+密码） |
-| POST | /users/login | 登录（返回JWT Token） |
-| GET | /users/ | 用户列表 |
-| GET | /users/{user_id} | 用户详情 |
+**实现文件**: [routers/users.py](file:///c:/Users/23107/Desktop/zhihui/backend/app/routers/users.py)
+
+| 方法 | 接口 | 说明 | 鉴权 | 实现 |
+|------|------|------|------|------|
+| POST | /users/register | 用户注册 | 无 | 接收 `username` + `password` + `role`(user/hr)，pbkdf2_sha256 哈希存库 |
+| POST | /users/login | 用户登录 | 无 | 校验密码 → 生成 JWT(30min) → 返回 token；**admin 角色拒绝登录**（返回"账户或密码错误"） |
+| GET | /users/me | 当前用户信息 | JWT | 解析 token 中的 sub，查库返回用户信息（含 role） |
+| GET | /users/ | 用户列表 | Admin | 分页查询所有用户 |
+| GET | /users/{user_id} | 用户详情 | JWT | 按 ID 查用户 |
+
+**实现要点**：
+- 密码使用 `pbkdf2_sha256` 不可逆哈希，不存明文
+- JWT 使用 `python-jose` 签发，有效期 30 分钟
+- `role` 字段区分 `user`(求职者) / `hr`(招聘者) / `admin`(管理员)
+- `login` 接口拦截 admin 角色的普通登录，强制走 `/login/admin` 隐藏入口
+- 注册仅开放 `user` 和 `hr` 两种角色
+
+### 后台管理员认证 `/api/v1/admin`
+
+**实现文件**: [routers/admin.py](file:///c:/Users/23107/Desktop/zhihui/backend/app/routers/admin.py)
+
+| 方法 | 接口 | 说明 | 鉴权 | 实现 |
+|------|------|------|------|------|
+| POST | /admin/login | 管理员登录 | 无 | 查独立的 `admins` 表 → 返回 JWT(sub=`__backdoor_admin__`) |
+| GET | /admin/dashboard/stats | 数据概览统计 | JWT | 聚合查询：岗位数、技能数、用户数、今日新增 |
+| GET | /admin/evolutions | 全局演化记录 | JWT | 分页返回所有演化记录，关联岗位名称 |
+| GET | /admin/tasks | 任务列表 | JWT | 分页返回爬取任务列表 |
+| DELETE | /admin/tasks/{task_id} | 删除任务 | Admin | 按 ID 删除爬取任务 |
+
+**实现要点**：
+- 管理员不存储在 `users` 表中，使用独立的 `admins` 表存储
+- 访问路径 `/login/admin` 在 URL 层面不可见，需要手动输入触发
+- `admins` 表通过后端启动时的 `init_default_admin()` 自动初始化默认管理员 `admin / admin123`
+- 管理端接口不依赖 `users` 表的 role 判断，使用独立的 JWT sub 标识 `__backdoor_admin__`
 
 ### 岗位管理 `/api/v1/jobs`
 
-| 方法 | 接口 | 说明 |
-|------|------|------|
-| GET | /jobs/ | 岗位列表（分页、筛选、排序） |
-| GET | /jobs/{job_id} | 岗位详情 |
-| POST | /jobs/ | 创建岗位 |
-| PUT | /jobs/{job_id} | 更新岗位 |
-| DELETE | /jobs/{job_id} | 删除岗位 |
-| GET | /jobs/{job_id}/capabilities | 获取岗位能力要求 |
-| POST | /jobs/{job_id}/capabilities | 添加岗位能力要求 |
-| GET | /jobs/{job_id}/evolutions | 获取岗位演化记录 |
-| POST | /jobs/{job_id}/evolutions | 创建岗位演化记录 |
+**实现文件**: [routers/jobs.py](file:///c:/Users/23107/Desktop/zhihui/backend/app/routers/jobs.py)
+
+| 方法 | 接口 | 说明 | 鉴权 | 实现 |
+|------|------|------|------|------|
+| GET | /jobs/ | 岗位列表 | 可选 | 支持 `data_type`(raw/cleaned) 筛选、`search`(名称/编码)、分页、排序 |
+| GET | /jobs/{job_id} | 岗位详情 | 可选 | 返回岗位完整信息（含关联分类） |
+| POST | /jobs/ | 创建岗位 | JWT | 创建岗位，支持多 `data_type` 批量创建 |
+| PUT | /jobs/{job_id} | 更新岗位 | JWT | `exclude_unset=True` 只更新传入字段 |
+| DELETE | /jobs/{job_id} | 删除岗位 | JWT | 软删除（`is_deleted=True`），不物理删除 |
+| GET | /jobs/{job_id}/capabilities | 岗位能力要求 | 可选 | 获取该岗位所有技能要求（含技能名称、级别） |
+| POST | /jobs/{job_id}/capabilities | 添加能力要求 | JWT | 关联技能到岗位 |
+| GET | /jobs/{job_id}/evolutions | 岗位演化记录 | 可选 | 获取该岗位的历史演化记录 |
+| POST | /jobs/{job_id}/evolutions | 创建演化记录 | JWT | 记录岗位变化（变化摘要、变化字段） |
+
+**实现要点**：
+- `data_type` 字段区分原始数据(`raw`)和清洗后数据(`cleaned`)，管理端和用户端按此字段分流展示
+- 全部使用 SQLAlchemy ORM 参数化查询，无原始 SQL 拼接
+- 管理员后端管理端添加岗位时可通过复选框选择数据来源
 
 ### 技能管理 `/api/v1/skills`
 
-| 方法 | 接口 | 说明 |
-|------|------|------|
-| GET | /skills/ | 技能列表（分类、搜索） |
-| GET | /skills/{skill_id} | 技能详情 |
-| POST | /skills/ | 创建技能 |
-| PUT | /skills/{skill_id} | 更新技能 |
-| DELETE | /skills/{skill_id} | 删除技能 |
+**实现文件**: [routers/skills.py](file:///c:/Users/23107/Desktop/zhihui/backend/app/routers/skills.py)
+
+| 方法 | 接口 | 说明 | 鉴权 | 实现 |
+|------|------|------|------|------|
+| GET | /skills/ | 技能列表 | 可选 | 支持分类筛选、名称搜索 |
+| GET | /skills/{skill_id} | 技能详情 | 可选 | 返回技能完整信息 |
+| POST | /skills/ | 创建技能 | Admin | 创建技能（名称+编码+分类+等级+描述） |
+| PUT | /skills/{skill_id} | 更新技能 | Admin | 部分更新 |
+| DELETE | /skills/{skill_id} | 删除技能 | Admin | 物理删除 |
 
 ### 简历管理 `/api/v1/resumes`
 
-| 方法 | 接口 | 说明 |
-|------|------|------|
-| POST | /resumes/upload | 上传简历（PDF/DOCX/TXT） |
-| GET | /resumes/ | 简历列表 |
-| GET | /resumes/{resume_id} | 简历详情 |
-| GET | /resumes/{resume_id}/skills | 获取简历技能 |
-| POST | /resumes/{resume_id}/skills | 添加简历技能 |
-| DELETE | /resumes/{resume_id} | 删除简历 |
+**实现文件**: [routers/resumes.py](file:///c:/Users/23107/Desktop/zhihui/backend/app/routers/resumes.py)
+
+| 方法 | 接口 | 说明 | 鉴权 | 实现 |
+|------|------|------|------|------|
+| POST | /resumes/upload | 上传简历 | JWT | 接收 PDF/DOCX/TXT，文件白名单校验，`uploader_id` 自动绑定当前用户 |
+| GET | /resumes/ | 简历列表 | JWT | **用户隔离**：只返回当前用户的简历 `WHERE uploader_id=当前用户` |
+| GET | /resumes/{resume_id} | 简历详情 | JWT | 校验 `uploader_id` 归属，拒绝越权访问 |
+| GET | /resumes/{resume_id}/skills | 简历技能 | JWT | 获取该简历关联的技能 |
+| POST | /resumes/{resume_id}/skills | 添加简历技能 | JWT | 关联技能到简历 |
+| DELETE | /resumes/{resume_id} | 删除简历 | JWT | 校验 `uploader_id` 归属，拒绝跨用户删除 |
+| GET | /resumes/{resume_id}/match/{job_id} | 匹配分析 | JWT | 规则匹配分析（关键词提取 + 重合度计算），返回分数/匹配技能/缺失技能 |
+
+**实现要点**：
+- 用户数据严格隔离：所有简历操作均校验 `uploader_id == current_user.id`
+- 文件上传白名单：仅允许 `application/pdf`、`application/vnd.openxmlformats-officedocument.wordprocessingml.document`、`text/plain`
+- 匹配分析当前为规则版，预留接口位置用于后续接入 AI 模型
 
 ### 人岗匹配 `/api/v1/match`
 
-| 方法 | 接口 | 说明 |
-|------|------|------|
-| POST | /match/analysis | 匹配度分析（差距分析+改进建议+学习路径） |
-| GET | /match/records | 匹配记录列表 |
-| GET | /match/records/{match_id} | 匹配记录详情 |
+**实现文件**: [routers/match.py](file:///c:/Users/23107/Desktop/zhihui/backend/app/routers/match.py)
+
+| 方法 | 接口 | 说明 | 鉴权 | 实现 |
+|------|------|------|------|------|
+| POST | /match/analysis | 匹配度分析 | JWT | 接收 `resume_id` + `job_id`，基于 `capability_requirements` 表的技能要求匹配分析 |
+| GET | /match/records | 匹配记录 | JWT | 返回当前用户的匹配历史 |
+| GET | /match/records/{record_id} | 匹配详情 | JWT | 单条匹配记录完整信息 |
+
+**实现要点**：
+- 分析维度：技能匹配率、要求覆盖率、等级差距
+- 返回结构化结果：总体分数 + 详细技能对比 + 改进建议
 
 ### 爬虫/智能体/AI 对接
 
-| 方法 | 接口 | 说明 |
-|------|------|------|
-| POST | /crawler/submit | 提交爬取的岗位数据 |
-| POST | /cleaner/submit | 提交清洗后的岗位数据 |
-| GET | /analysis/jobs/{job_id}/cleaned | 获取清洗后岗位数据 |
-| POST | /analysis/submit | 提交AI分析结果 |
-| GET | /analysis/results | 分析结果列表 |
-| GET | /analysis/results/{result_id} | 分析结果详情 |
+**实现文件**: [routers/crawler.py](file:///c:/Users/23107/Desktop/zhihui/backend/app/routers/crawler.py)、[routers/cleaner.py](file:///c:/Users/23107/Desktop/zhihui/backend/app/routers/cleaner.py)、[routers/analysis.py](file:///c:/Users/23107/Desktop/zhihui/backend/app/routers/analysis.py)
 
-### 后台管理 `/api/v1/admin`
+| 方法 | 接口 | 说明 | 鉴权 | 实现 |
+|------|------|------|------|------|
+| POST | /crawler/submit | 提交爬取数据 | API Key | 爬虫写入 `jobs` 表 (`data_type='raw'`) |
+| POST | /cleaner/submit | 提交清洗数据 | API Key | 智能体写入 `jobs` 表 (`data_type='cleaned'`) |
+| GET | /analysis/jobs/{job_id}/cleaned | 获取清洗数据 | API Key | 返回已清洗的岗位数据 |
+| POST | /analysis/submit | 提交 AI 分析 | API Key | 写入 `ai_analysis_results` 表 |
+| GET | /analysis/results | AI 分析结果列表 | JWT | 分页返回分析结果 |
+| GET | /analysis/results/{result_id} | AI 分析详情 | JWT | 返回单条分析结果 |
 
-| 方法 | 接口 | 说明 |
-|------|------|------|
-| GET | /admin/dashboard/stats | 数据概览统计 |
-| GET | /admin/evolutions | 全局演化记录列表 |
-| GET | /admin/tasks | 任务列表 |
-| DELETE | /admin/tasks/{task_id} | 删除指定任务 |
+### 用户/HR/管理员权限架构
+
+```
+登录 POST /api/v1/users/login
+         ↓
+    ┌─ role='user'  ─→ 前端跳转 /user → 只能访问求职者接口（简历上传、匹配分析）
+    │
+    ├─ role='hr'     ─→ 前端跳转 /hr   → 只能访问招聘者接口（岗位发布、简历筛选）
+    │
+    └─ role='admin'  ─→ 该路径被后端拦截，返回"账户或密码错误"
+                        只能通过隐藏入口 `/login/admin` → 查 `admins` 表 → 跳转 /admin
+
+越权防护（三层）：
+  第1层 — 前端路由守卫：URL 直接输入其他角色路径时自动跳转对应首页
+  第2层 — 后端 Depends：get_current_user → get_hr_user / get_admin_user 按角色授权
+  第3层 — 数据隔离：所有简历操作校验 uploader_id，拒绝跨用户访问
+```
 
 ## 数据流向
 
