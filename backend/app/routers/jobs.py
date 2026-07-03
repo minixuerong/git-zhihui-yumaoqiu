@@ -17,12 +17,16 @@ def read_jobs(
     keyword: str = None,
     new_only: bool = Query(False, description="仅显示今日新增岗位"),
     data_type: str = Query(None, description="数据类型: raw 或 cleaned"),
+    uploader_id: int = Query(None, description="按发布者ID过滤"),
     db: Session = Depends(get_db),
     current_user: schemas.UserResponse = Depends(get_current_active_user)
 ):
     jobs = crud.get_jobs(db, skip=skip, limit=limit, category_id=category_id,
-                         status=status, keyword=keyword, new_only=new_only, data_type=data_type)
-    total = crud.get_jobs_count(db, category_id=category_id, status=status, keyword=keyword, new_only=new_only, data_type=data_type)
+                         status=status, keyword=keyword, new_only=new_only,
+                         data_type=data_type, uploader_id=uploader_id)
+    total = crud.get_jobs_count(db, category_id=category_id, status=status,
+                                 keyword=keyword, new_only=new_only,
+                                 data_type=data_type, uploader_id=uploader_id)
     return {
         "items": [schemas.JobResponse.model_validate(job) for job in jobs],
         "total": total,
@@ -47,7 +51,15 @@ def create_job(job: schemas.JobCreate, db: Session = Depends(get_db),
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Job code already exists"
         )
-    return schemas.JobResponse.model_validate(crud.create_job(db=db, job=job))
+    # 自动关联当前用户作为发布者
+    job_data = job.model_dump()
+    job_data["uploader_id"] = current_user.id
+    # 招聘者发布的岗位自动标记为 cleaned（用户端可见）
+    if current_user.role == 'hr':
+        job_data["data_type"] = 'cleaned'
+        if job_data.get("status") is None:
+            job_data["status"] = 'active'
+    return schemas.JobResponse.model_validate(crud.create_job(db=db, job=schemas.JobCreate(**job_data)))
 
 @router.put("/{job_id}", response_model=schemas.JobResponse)
 def update_job(job_id: int, job_update: schemas.JobUpdate, db: Session = Depends(get_db),

@@ -5,7 +5,7 @@ import api from '@/api'
 interface UserInfo {
   id: number
   username: string
-  role: 'admin' | 'user'
+  role: 'admin' | 'user' | 'hr'
   token: string
 }
 

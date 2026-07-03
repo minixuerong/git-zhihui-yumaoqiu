@@ -115,10 +115,12 @@ class Job(Base):
     confidence_score = Column(Float)
     is_deleted = Column(Boolean, default=False)
     data_type = Column(Enum(DataJobType), default=DataJobType.raw, nullable=False)
+    uploader_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
     
     category = relationship("JobCategory", back_populates="jobs")
+    uploader = relationship("User")
     capability_requirements = relationship("CapabilityRequirement", back_populates="job", cascade="all, delete-orphan")
     evolutions = relationship("JobEvolution", back_populates="job", cascade="all, delete-orphan")
     match_records = relationship("MatchRecord", back_populates="job", cascade="all, delete-orphan")

@@ -6,6 +6,7 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
 import App from './App.vue'
 import router from './router'
+import { useUserStore } from './stores/user'
 import './assets/styles/global.css'
 
 const app = createApp(App)
@@ -15,7 +16,12 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
 
-app.use(createPinia())
+const pinia = createPinia()
+app.use(pinia)
+
+// 从 localStorage 恢复登录状态（解决热更新后用户信息丢失）
+useUserStore().loadFromStorage()
+
 app.use(ElementPlus)
 app.use(router)
 

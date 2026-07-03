@@ -132,7 +132,7 @@ def get_job_by_code(db: Session, code: str) -> models.Job:
 
 def get_jobs(db: Session, skip: int = 0, limit: int = 100, category_id: int = None,
              status: str = None, keyword: str = None, new_only: bool = False,
-             data_type: str = None) -> list:
+             data_type: str = None, uploader_id: int = None) -> list:
     query = db.query(models.Job).filter(models.Job.is_deleted == False)
     if data_type:
         query = query.filter(models.Job.data_type == data_type)
@@ -148,11 +148,13 @@ def get_jobs(db: Session, skip: int = 0, limit: int = 100, category_id: int = No
     if new_only:
         today = datetime.now().date()
         query = query.filter(func.date(models.Job.created_at) == today)
+    if uploader_id is not None:
+        query = query.filter(models.Job.uploader_id == uploader_id)
     query = query.order_by(models.Job.created_at.desc())
     return query.offset(skip).limit(limit).all()
 
 def get_jobs_count(db: Session, category_id: int = None, status: str = None, keyword: str = None, new_only: bool = False,
-                   data_type: str = None) -> int:
+                   data_type: str = None, uploader_id: int = None) -> int:
     query = db.query(models.Job).filter(models.Job.is_deleted == False)
     if data_type:
         query = query.filter(models.Job.data_type == data_type)
@@ -168,6 +170,8 @@ def get_jobs_count(db: Session, category_id: int = None, status: str = None, key
     if new_only:
         today = datetime.now().date()
         query = query.filter(func.date(models.Job.created_at) == today)
+    if uploader_id is not None:
+        query = query.filter(models.Job.uploader_id == uploader_id)
     return query.count()
 
 def create_job(db: Session, job: schemas.JobCreate) -> models.Job:

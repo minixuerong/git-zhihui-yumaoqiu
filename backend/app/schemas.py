@@ -95,6 +95,7 @@ class JobBase(BaseModel):
     data_source: Optional[str] = None
     confidence_score: Optional[float] = Field(None, ge=0, le=1)
     data_type: Optional[DataJobType] = DataJobType.raw
+    uploader_id: Optional[int] = None
 
 class JobCreate(JobBase):
     pass

@@ -9,6 +9,8 @@ export interface Job {
   status?: string
   is_new?: boolean
   data_source?: string
+  data_type?: string
+  uploader_id?: number
   confidence_score?: number
   created_at: string
   updated_at: string
@@ -21,16 +23,17 @@ export interface PaginatedJobs {
   size: number
 }
 
-export function getJobs({ skip = 0, limit = 10, keyword, status, new_only, data_type }: {
+export function getJobs({ skip = 0, limit = 10, keyword, status, new_only, data_type, uploader_id }: {
   skip?: number
   limit?: number
   keyword?: string
   status?: string
   new_only?: boolean
   data_type?: string
+  uploader_id?: number
 } = {}) {
   return api.get<any, PaginatedJobs>('/jobs/', {
-    params: { skip, limit, keyword, status, new_only, data_type }
+    params: { skip, limit, keyword, status, new_only, data_type, uploader_id }
   })
 }
 
@@ -44,6 +47,7 @@ export function createJob(data: {
   department?: string
   core_responsibilities?: string
   status?: string
+  data_type?: string
 }) {
   return api.post<any, Job>('/jobs/', data)
 }
