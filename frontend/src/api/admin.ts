@@ -46,3 +46,18 @@ export function getTasks(skip = 0, limit = 100) {
 export function deleteTask(taskId: number) {
   return api.delete(`/admin/tasks/${taskId}`)
 }
+
+export interface AdminItem {
+  id: number
+  username: string
+  is_active: boolean
+  created_at: string
+}
+
+export function getAdminUsers(role?: string) {
+  return api.get<any, any[]>('/admin/users', { params: { role } })
+}
+
+export function getAdminList() {
+  return api.get<any, AdminItem[]>('/admin/admins')
+}

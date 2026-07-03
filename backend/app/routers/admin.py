@@ -97,3 +97,27 @@ def delete_task(
     success = crud.delete_crawl_task(db, task_id=task_id)
     if not success:
         raise HTTPException(status_code=404, detail="Task not found")
+
+
+@router.get("/users", response_model=list[schemas.UserResponse])
+def get_admin_users(
+    role: str = None,
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db),
+    current_user: schemas.UserResponse = Depends(get_current_active_user)
+):
+    """获取用户列表（支持按角色过滤）"""
+    users = crud.get_users(db, skip=skip, limit=limit)
+    if role:
+        users = [u for u in users if u.role == role]
+    return users
+
+
+@router.get("/admins", response_model=list[schemas.AdminResponse])
+def get_admin_list(
+    db: Session = Depends(get_db),
+    current_user: schemas.UserResponse = Depends(get_admin_user)
+):
+    """获取管理员列表"""
+    return db.query(models.Admin).filter(models.Admin.is_active == True).all()

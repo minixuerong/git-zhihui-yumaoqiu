@@ -108,6 +108,18 @@ def login(form_data: schemas.LoginRequest, db: Session = Depends(get_db)):
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
+@router.post("/change-password", response_model=schemas.UserResponse)
+def change_password(body: schemas.ChangePasswordRequest,
+                    db: Session = Depends(get_db),
+                    current_user: schemas.UserResponse = Depends(get_current_active_user)):
+    """修改当前用户密码（需验证旧密码）"""
+    db_user = crud.get_user(db, user_id=current_user.id)
+    if not db_user or not crud.verify_password(body.old_password, db_user.password_hash):
+        raise HTTPException(status_code=400, detail="旧密码错误")
+    if len(body.new_password) < 6:
+        raise HTTPException(status_code=400, detail="新密码长度不能少于6位")
+    return crud.update_user_password(db, user_id=current_user.id, new_password=body.new_password)
+
 @router.get("/", response_model=list[schemas.UserResponse])
 def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db),
                current_user: schemas.UserResponse = Depends(get_current_active_user)):

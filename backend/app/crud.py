@@ -79,6 +79,14 @@ def update_user(db: Session, user_id: int, user_update: schemas.UserUpdate) -> m
         db.refresh(db_user)
     return db_user
 
+def update_user_password(db: Session, user_id: int, new_password: str) -> models.User:
+    db_user = get_user(db, user_id)
+    if db_user:
+        db_user.password_hash = get_password_hash(new_password)
+        db.commit()
+        db.refresh(db_user)
+    return db_user
+
 def delete_user(db: Session, user_id: int) -> bool:
     db_user = get_user(db, user_id)
     if db_user:

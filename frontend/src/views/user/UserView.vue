@@ -3,9 +3,17 @@
     <div class="sidebar" :class="{ collapsed: sidebarCollapsed }">
       <div class="logo">CAPABILITY<span>.BRAIN</span></div>
       <nav>
-        <a href="javascript:void(0)" class="nav-item" :class="{ active: activeTab === 'home' }" @click="activeTab = 'home'">
-          <span class="nav-icon">🏠</span>
-          <span class="nav-text">我的首页</span>
+        <a href="javascript:void(0)" class="nav-item" :class="{ active: activeTab === 'graph' }" @click="activeTab = 'graph'">
+          <span class="nav-icon">🔗</span>
+          <span class="nav-text">能力图谱</span>
+        </a>
+        <a href="javascript:void(0)" class="nav-item active" :class="{ active: activeTab === 'discovery' }" @click="activeTab = 'discovery'">
+          <span class="nav-icon">🔍</span>
+          <span class="nav-text">岗位发现</span>
+        </a>
+        <a href="javascript:void(0)" class="nav-item" :class="{ active: activeTab === 'update' }" @click="activeTab = 'update'">
+          <span class="nav-icon">🔄</span>
+          <span class="nav-text">能力更新</span>
         </a>
         <a href="javascript:void(0)" class="nav-item" :class="{ active: activeTab === 'resume' }" @click="activeTab = 'resume'">
           <span class="nav-icon">📄</span>
@@ -20,26 +28,9 @@
           <span class="nav-text">学习规划</span>
         </a>
         <div class="nav-divider"></div>
-        <a href="javascript:void(0)" class="nav-item" :class="{ active: activeTab === 'graph' }" @click="activeTab = 'graph'">
-          <span class="nav-icon">🔗</span>
-          <span class="nav-text">能力图谱</span>
-        </a>
-        <a href="javascript:void(0)" class="nav-item active" :class="{ active: activeTab === 'discovery' }" @click="activeTab = 'discovery'">
-          <span class="nav-icon">🔍</span>
-          <span class="nav-text">岗位发现</span>
-        </a>
-        <a href="javascript:void(0)" class="nav-item" :class="{ active: activeTab === 'update' }" @click="activeTab = 'update'">
-          <span class="nav-icon">🔄</span>
-          <span class="nav-text">能力更新</span>
-        </a>
-        <div class="nav-divider"></div>
-        <div class="nav-item disabled">
+        <div class="nav-item" :class="{ active: showChangePassword }" @click="showChangePassword = true">
           <span class="nav-icon">⚙️</span>
           <span class="nav-text">系统设置</span>
-        </div>
-        <div class="nav-item disabled">
-          <span class="nav-icon">❓</span>
-          <span class="nav-text">帮助文档</span>
         </div>
       </nav>
       <div class="toggle-btn" @click="sidebarCollapsed = !sidebarCollapsed"></div>
@@ -351,6 +342,38 @@
       <div v-show="activeTab === 'update'" class="tab-content">
         <UpdatePanel />
       </div>
+
+      <!-- ===== 系统设置 - 密码修改弹窗 ===== -->
+      <div class="modal-overlay" :class="{ active: showChangePassword }" @click.self="showChangePassword = false">
+        <div class="modal" style="max-width: 460px;">
+          <div class="modal-header">
+            <h3 class="modal-title">修改密码</h3>
+            <button class="close-btn" @click="showChangePassword = false">×</button>
+          </div>
+          <div class="modal-body">
+            <div v-if="changePwdSuccess" class="success-msg">✅ 密码修改成功，下次登录请使用新密码</div>
+            <div v-if="changePwdError" class="error-msg">{{ changePwdError }}</div>
+            <div class="form-group">
+              <label class="form-label">旧密码</label>
+              <input type="password" class="form-input" v-model="passwordForm.old_password" placeholder="请输入旧密码">
+            </div>
+            <div class="form-group">
+              <label class="form-label">新密码</label>
+              <input type="password" class="form-input" v-model="passwordForm.new_password" placeholder="请输入新密码（至少6位）">
+            </div>
+            <div class="form-group">
+              <label class="form-label">确认新密码</label>
+              <input type="password" class="form-input" v-model="passwordForm.confirm_password" placeholder="再次输入新密码">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" @click="showChangePassword = false">取消</button>
+            <button class="btn btn-primary" @click="handleChangePassword" :disabled="changePwdLoading">
+              {{ changePwdLoading ? '修改中...' : '确认修改' }}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -360,6 +383,7 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { getJobs } from '@/api/jobs'
+import { changePassword as changePasswordApi } from '@/api/users'
 import ResumePanel from './ResumePanel.vue'
 import MatchPanel from './MatchPanel.vue'
 import LearningPanel from './LearningPanel.vue'
@@ -400,7 +424,7 @@ const discoveryJobs = ref<JobItem[]>([])
 const discoveryLoading = ref(false)
 const totalJobs = ref(0)
 const currentPage = ref(1)
-const pageSize = 48
+const pageSize = 24
 const totalPages = computed(() => Math.ceil(totalJobs.value / pageSize))
 
 async function loadJobs() {
@@ -444,6 +468,52 @@ function getBadge(job: JobItem) {
 function formatDate(dateStr: string) {
   if (!dateStr) return ''
   return dateStr.slice(0, 10)
+}
+
+// ===== 系统设置 - 密码修改 =====
+const showChangePassword = ref(false)
+const passwordForm = reactive({
+  old_password: '',
+  new_password: '',
+  confirm_password: '',
+})
+const changePwdLoading = ref(false)
+const changePwdError = ref('')
+const changePwdSuccess = ref(false)
+
+async function handleChangePassword() {
+  changePwdError.value = ''
+  changePwdSuccess.value = false
+
+  if (!passwordForm.old_password || !passwordForm.new_password || !passwordForm.confirm_password) {
+    changePwdError.value = '请填写所有字段'
+    return
+  }
+  if (passwordForm.new_password.length < 6) {
+    changePwdError.value = '新密码长度不能少于6位'
+    return
+  }
+  if (passwordForm.new_password !== passwordForm.confirm_password) {
+    changePwdError.value = '两次输入的新密码不一致'
+    return
+  }
+
+  changePwdLoading.value = true
+  try {
+    await changePasswordApi({
+      old_password: passwordForm.old_password,
+      new_password: passwordForm.new_password,
+    })
+    changePwdSuccess.value = true
+    // 重置表单
+    passwordForm.old_password = ''
+    passwordForm.new_password = ''
+    passwordForm.confirm_password = ''
+  } catch (e: any) {
+    changePwdError.value = e?.response?.data?.detail || '密码修改失败'
+  } finally {
+    changePwdLoading.value = false
+  }
 }
 
 function handleLogout() {
@@ -1040,6 +1110,26 @@ function handleLogout() {
 .skill-level.high { color: #16a34a; }
 .skill-level.medium { color: #ea580c; }
 .skill-level.low { color: #666; }
+
+.success-msg {
+  padding: 10px 14px;
+  background: #dcfce7;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
+  color: #16a34a;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.error-msg {
+  padding: 10px 14px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  color: #dc2626;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
 
 .confidence-bar { height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden; }
 .confidence-fill { height: 100%; background: #3b82f6; border-radius: 4px; }

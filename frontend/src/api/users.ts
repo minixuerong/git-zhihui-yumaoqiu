@@ -21,3 +21,7 @@ export function updateUser(id: number, data: { email?: string; full_name?: strin
 export function deleteUser(id: number) {
   return api.delete(`/users/${id}`)
 }
+
+export function changePassword(data: { old_password: string; new_password: string }) {
+  return api.post('/users/change-password', data)
+}
