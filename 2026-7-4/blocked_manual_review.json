@@ -1,0 +1,32 @@
+[
+  {
+    "job_title": "AI算法移植工程师",
+    "company_tag": "51-100人 | 民营 | 互联网",
+    "job_tag": "本科 1-3年",
+    "publish_date": "2025-06-23",
+    "job_description": "深度学习 图像算法 C(熟练) C++(熟练) Python(熟练):1.负责将深度学习图像算法移植到嵌入式Linux平台；2.基于平台特性优化算法耗时和资源占用；职位要求：1.本科及以上学历，一年以上相关工作经验2.熟练掌握C/C++编程，熟悉python编程；3.有嵌入式linux系统开发经验优先；4.有联咏、酷芯微等项目算法移植经验优先考虑； 5.有OpenCV、TensorFlow、Caffe开发经验优先考虑；6.熟悉计算机视觉、图像处理、模式识别、深度学习领域等相关知识；7.具备良好的沟通表达能力和团队合作意识。",
+    "company": "重庆哆来目科技",
+    "url": "https://www.huibo.com/cq/job/jobw3zwi43/",
+    "_confidence": 0.595
+  },
+  {
+    "job_title": "AI算法工程师",
+    "company_tag": "101-500人 | 合资 | 化工/原材料",
+    "job_tag": "硕士 3-5年 五险一金 带薪年假 工龄工资",
+    "publish_date": "2025-05-14",
+    "job_description": "深度学习 SLAM算法 C(熟练) C++(熟练) Python(熟练)1.相机硬件的选型、调试和标定等相关工作；2.设计、开发和优化视觉算法和模型，以解决图像识别、目标检测、目标跟踪、图像分割等问题;3.开发和推进基于深度学习的单目深度拟合、双目立体匹配算法应用落地;4.调研和推进3D人体姿态估计算法、6D物体姿态估计算法的评估和应用;5.跟进基于深度学习的前沿视觉SLAM算法;6.负责视觉算法开发、调试、部署和落地;任职要求1.熟悉相机sensor工作原理、ISP图像处理流程、相机基本参数及标定，了解图像质量的主客观评估标准；算法（如YOLO、DETR等），语义分割算法(Mask2Former、SAM等);2.熟悉至少一种常用的单目深度拟合算法(如DepthAnything等），至少熟悉一种双目立体匹配算法（如LightStereo等）；3.了解主流的3D人体姿态估计算法（如PoseFormer等）或6D物体姿态估计算法(如FoundationPose等)的优先;4.了解主流的端到端视觉SLAM算法(如DROID-SLAM等），了解基于Gaussian Splatting的SLAM(如SplaTAM)的优先;6.熟练掌握pytorch等框架，熟悉常见的深度学习模型，并掌握相关的实现、训练、调优、部署等工作；7.熟悉C++/C和Python编程语言，具备良好的编程习惯和较好的工程化能力;8.具有计算机科学、电子工程或相关专业全日制硕士及以上学历；2年及以上工作经验。",
+    "company": "润际远东",
+    "url": "https://www.huibo.com/cq/job/jobh5tbs80/",
+    "_confidence": 0.591
+  },
+  {
+    "job_title": "大模型训练师（",
+    "company_tag": "50人以下 | 民营 | 其他专业服务",
+    "job_tag": "本科 经验不限 五险一金 双休 住房补贴 带薪年假 节日福利 绩效奖金 带薪培训",
+    "publish_date": "",
+    "job_description": "",
+    "company": "重庆云谷创服人才科技",
+    "url": "https://www.huibo.com/cq/job/job1f4u6df/",
+    "_confidence": 0.597
+  }
+]

@@ -1,0 +1,103 @@
+{
+  "generated_at": "2026-07-04T23:36:24.170867",
+  "analyzed_jobs": 5,
+  "changes": [
+    {
+      "additions": [
+        "paddlepaddle",
+        "大模型",
+        "transformer",
+        "agent",
+        "自然语言处理",
+        "推荐系统",
+        "java",
+        "语音识别",
+        "go"
+      ],
+      "removals": [
+        "pytorch",
+        "机器学习",
+        "tensorflow"
+      ],
+      "unchanged": [
+        "强化学习",
+        "python",
+        "计算机视觉",
+        "深度学习",
+        "c++"
+      ],
+      "change_summary": "新增9项，移除3项",
+      "job": "AI算法工程师"
+    },
+    {
+      "additions": [
+        "c++"
+      ],
+      "removals": [
+        "大模型",
+        "langchain",
+        "python",
+        "neo4j",
+        "自然语言处理",
+        "java",
+        "caffe",
+        "tensorflow"
+      ],
+      "unchanged": [
+        "深度学习",
+        "机器学习",
+        "pytorch"
+      ],
+      "change_summary": "新增1项，移除8项",
+      "job": "算法工程师"
+    },
+    {
+      "additions": [
+        "onnx",
+        "大模型",
+        "python",
+        "transformer",
+        "计算机视觉",
+        "深度学习",
+        "pytorch",
+        "机器学习",
+        "c++",
+        "tensorflow"
+      ],
+      "removals": [],
+      "unchanged": [],
+      "change_summary": "新增10项，移除0项",
+      "job": "智能驾驶算法工程师"
+    },
+    {
+      "additions": [
+        "gpt",
+        "python",
+        "transformer",
+        "深度学习",
+        "pytorch",
+        "机器学习",
+        "gnn",
+        "tensorflow"
+      ],
+      "removals": [],
+      "unchanged": [],
+      "change_summary": "新增8项，移除0项",
+      "job": "CAE算法工程师"
+    },
+    {
+      "additions": [],
+      "removals": [
+        "sql",
+        "大模型",
+        "python",
+        "机器学习",
+        "agent",
+        "自然语言处理"
+      ],
+      "unchanged": [],
+      "change_summary": "新增0项，移除6项",
+      "job": "人工智能工程师"
+    }
+  ]
+}

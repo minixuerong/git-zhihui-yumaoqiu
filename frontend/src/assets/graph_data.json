@@ -1,0 +1,1065 @@
+{
+  "categories": [
+    {
+      "name": "底层研发",
+      "description": "AI基础设施与底层框架开发"
+    },
+    {
+      "name": "算法模型",
+      "description": "核心算法研究与模型训练"
+    },
+    {
+      "name": "AI工程落地",
+      "description": "AI模型工程化部署与落地应用"
+    },
+    {
+      "name": "数据",
+      "description": "数据采集、标注、处理与分析"
+    },
+    {
+      "name": "硬件",
+      "description": "AI芯片与算力硬件"
+    },
+    {
+      "name": "产品业务",
+      "description": "AI产品设计与业务落地"
+    },
+    {
+      "name": "合规运营",
+      "description": "AI安全合规与质量保障"
+    },
+    {
+      "name": "新兴轻门槛岗",
+      "description": "新兴AI应用型低门槛岗位"
+    },
+    {
+      "name": "技能",
+      "description": "AI技能"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "AI算法工程师",
+      "name": "AI算法工程师",
+      "category": 1,
+      "categoryName": "算法模型",
+      "symbolSize": 80,
+      "value": 24
+    },
+    {
+      "id": "算法工程师",
+      "name": "算法工程师",
+      "category": 1,
+      "categoryName": "算法模型",
+      "symbolSize": 75,
+      "value": 15
+    },
+    {
+      "id": "智能驾驶算法工程师",
+      "name": "智能驾驶算法工程师",
+      "category": 1,
+      "categoryName": "算法模型",
+      "symbolSize": 60,
+      "value": 10
+    },
+    {
+      "id": "CAE算法工程师",
+      "name": "CAE算法工程师",
+      "category": 1,
+      "categoryName": "算法模型",
+      "symbolSize": 54,
+      "value": 8
+    },
+    {
+      "id": "人工智能工程师",
+      "name": "人工智能工程师",
+      "category": 1,
+      "categoryName": "算法模型",
+      "symbolSize": 51,
+      "value": 7
+    },
+    {
+      "id": "AI算法工程师助理",
+      "name": "AI算法工程师助理",
+      "category": 1,
+      "categoryName": "算法模型",
+      "symbolSize": 42,
+      "value": 4
+    },
+    {
+      "id": "机器视觉工程师",
+      "name": "机器视觉工程师",
+      "category": 1,
+      "categoryName": "算法模型",
+      "symbolSize": 39,
+      "value": 3
+    },
+    {
+      "id": "人工智能研发工程师",
+      "name": "人工智能研发工程师",
+      "category": 1,
+      "categoryName": "算法模型",
+      "symbolSize": 39,
+      "value": 3
+    },
+    {
+      "id": "AI软件工程师",
+      "name": "AI软件工程师",
+      "category": 1,
+      "categoryName": "算法模型",
+      "symbolSize": 39,
+      "value": 3
+    },
+    {
+      "id": "python",
+      "name": "python",
+      "category": 8,
+      "symbolSize": 37,
+      "value": 11,
+      "isEmerging": false
+    },
+    {
+      "id": "深度学习",
+      "name": "深度学习",
+      "category": 8,
+      "symbolSize": 31,
+      "value": 8,
+      "isEmerging": false
+    },
+    {
+      "id": "c++",
+      "name": "c++",
+      "category": 8,
+      "symbolSize": 31,
+      "value": 8,
+      "isEmerging": false
+    },
+    {
+      "id": "机器学习",
+      "name": "机器学习",
+      "category": 8,
+      "symbolSize": 29,
+      "value": 7,
+      "isEmerging": false
+    },
+    {
+      "id": "大模型",
+      "name": "大模型",
+      "category": 8,
+      "symbolSize": 27,
+      "value": 6,
+      "isEmerging": false
+    },
+    {
+      "id": "pytorch",
+      "name": "pytorch",
+      "category": 8,
+      "symbolSize": 25,
+      "value": 5,
+      "isEmerging": false
+    },
+    {
+      "id": "计算机视觉",
+      "name": "计算机视觉",
+      "category": 8,
+      "symbolSize": 23,
+      "value": 4,
+      "isEmerging": false
+    },
+    {
+      "id": "tensorflow",
+      "name": "tensorflow",
+      "category": 8,
+      "symbolSize": 23,
+      "value": 4,
+      "isEmerging": false
+    },
+    {
+      "id": "自然语言处理",
+      "name": "自然语言处理",
+      "category": 8,
+      "symbolSize": 21,
+      "value": 3,
+      "isEmerging": false
+    },
+    {
+      "id": "java",
+      "name": "java",
+      "category": 8,
+      "symbolSize": 21,
+      "value": 3,
+      "isEmerging": false
+    },
+    {
+      "id": "transformer",
+      "name": "transformer",
+      "category": 8,
+      "symbolSize": 21,
+      "value": 3,
+      "isEmerging": false
+    },
+    {
+      "id": "agent",
+      "name": "agent",
+      "category": 8,
+      "symbolSize": 19,
+      "value": 2,
+      "isEmerging": false
+    },
+    {
+      "id": "强化学习",
+      "name": "强化学习",
+      "category": 8,
+      "symbolSize": 19,
+      "value": 2,
+      "isEmerging": true
+    },
+    {
+      "id": "sql",
+      "name": "sql",
+      "category": 8,
+      "symbolSize": 17,
+      "value": 1,
+      "isEmerging": false
+    },
+    {
+      "id": "neo4j",
+      "name": "neo4j",
+      "category": 8,
+      "symbolSize": 17,
+      "value": 1,
+      "isEmerging": false
+    },
+    {
+      "id": "langchain",
+      "name": "langchain",
+      "category": 8,
+      "symbolSize": 17,
+      "value": 1,
+      "isEmerging": false
+    },
+    {
+      "id": "caffe",
+      "name": "caffe",
+      "category": 8,
+      "symbolSize": 17,
+      "value": 1,
+      "isEmerging": false
+    },
+    {
+      "id": "gnn",
+      "name": "gnn",
+      "category": 8,
+      "symbolSize": 17,
+      "value": 1,
+      "isEmerging": false
+    },
+    {
+      "id": "gpt",
+      "name": "gpt",
+      "category": 8,
+      "symbolSize": 17,
+      "value": 1,
+      "isEmerging": false
+    },
+    {
+      "id": "推荐系统",
+      "name": "推荐系统",
+      "category": 8,
+      "symbolSize": 17,
+      "value": 1,
+      "isEmerging": false
+    },
+    {
+      "id": "paddlepaddle",
+      "name": "paddlepaddle",
+      "category": 8,
+      "symbolSize": 17,
+      "value": 1,
+      "isEmerging": false
+    },
+    {
+      "id": "语音识别",
+      "name": "语音识别",
+      "category": 8,
+      "symbolSize": 17,
+      "value": 1,
+      "isEmerging": false
+    },
+    {
+      "id": "onnx",
+      "name": "onnx",
+      "category": 8,
+      "symbolSize": 17,
+      "value": 1,
+      "isEmerging": false
+    },
+    {
+      "id": "go",
+      "name": "go",
+      "category": 8,
+      "symbolSize": 17,
+      "value": 1,
+      "isEmerging": false
+    }
+  ],
+  "links": [
+    {
+      "source": "人工智能工程师",
+      "target": "agent",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "人工智能工程师",
+      "target": "sql",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "人工智能工程师",
+      "target": "大模型",
+      "value": 2,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 2,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "机器视觉工程师",
+      "target": "深度学习",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "机器视觉工程师",
+      "target": "c++",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "机器视觉工程师",
+      "target": "python",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "人工智能工程师",
+      "target": "机器学习",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "人工智能工程师",
+      "target": "自然语言处理",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "人工智能工程师",
+      "target": "python",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "人工智能研发工程师",
+      "target": "c++",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "人工智能研发工程师",
+      "target": "python",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "人工智能研发工程师",
+      "target": "计算机视觉",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "算法工程师",
+      "target": "大模型",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "算法工程师",
+      "target": "neo4j",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "算法工程师",
+      "target": "自然语言处理",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "算法工程师",
+      "target": "机器学习",
+      "value": 2,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 2,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "算法工程师",
+      "target": "深度学习",
+      "value": 2,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 2,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "算法工程师",
+      "target": "pytorch",
+      "value": 2,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 2,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "算法工程师",
+      "target": "tensorflow",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "算法工程师",
+      "target": "langchain",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "算法工程师",
+      "target": "python",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "算法工程师",
+      "target": "java",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "算法工程师",
+      "target": "caffe",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "AI软件工程师",
+      "target": "python",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "AI软件工程师",
+      "target": "c++",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "AI软件工程师",
+      "target": "java",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "AI算法工程师",
+      "target": "机器学习",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "AI算法工程师",
+      "target": "深度学习",
+      "value": 2,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 2,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "AI算法工程师",
+      "target": "强化学习",
+      "value": 2,
+      "confidence": 0.72,
+      "lineStyle": {
+        "width": 2,
+        "opacity": 0.92
+      }
+    },
+    {
+      "source": "AI算法工程师",
+      "target": "python",
+      "value": 3,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 3,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "AI算法工程师",
+      "target": "c++",
+      "value": 2,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 2,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "AI算法工程师",
+      "target": "tensorflow",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "AI算法工程师",
+      "target": "pytorch",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "AI算法工程师",
+      "target": "计算机视觉",
+      "value": 2,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 2,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "AI算法工程师助理",
+      "target": "python",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "AI算法工程师助理",
+      "target": "c++",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "AI算法工程师助理",
+      "target": "机器学习",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "AI算法工程师助理",
+      "target": "深度学习",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "CAE算法工程师",
+      "target": "gnn",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "CAE算法工程师",
+      "target": "transformer",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "CAE算法工程师",
+      "target": "机器学习",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "CAE算法工程师",
+      "target": "python",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "CAE算法工程师",
+      "target": "tensorflow",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "CAE算法工程师",
+      "target": "pytorch",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "CAE算法工程师",
+      "target": "深度学习",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "CAE算法工程师",
+      "target": "gpt",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "AI算法工程师",
+      "target": "自然语言处理",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "AI算法工程师",
+      "target": "推荐系统",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "AI算法工程师",
+      "target": "transformer",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "AI算法工程师",
+      "target": "paddlepaddle",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "AI算法工程师",
+      "target": "大模型",
+      "value": 2,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 2,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "AI算法工程师",
+      "target": "语音识别",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "智能驾驶算法工程师",
+      "target": "transformer",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "智能驾驶算法工程师",
+      "target": "onnx",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "智能驾驶算法工程师",
+      "target": "大模型",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "智能驾驶算法工程师",
+      "target": "c++",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "智能驾驶算法工程师",
+      "target": "python",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "智能驾驶算法工程师",
+      "target": "机器学习",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "智能驾驶算法工程师",
+      "target": "pytorch",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "智能驾驶算法工程师",
+      "target": "tensorflow",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "智能驾驶算法工程师",
+      "target": "深度学习",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "智能驾驶算法工程师",
+      "target": "计算机视觉",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "算法工程师",
+      "target": "c++",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "AI算法工程师",
+      "target": "agent",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "AI算法工程师",
+      "target": "java",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    },
+    {
+      "source": "AI算法工程师",
+      "target": "go",
+      "value": 1,
+      "confidence": 0.62,
+      "lineStyle": {
+        "width": 1,
+        "opacity": 0.82
+      }
+    }
+  ],
+  "jobSkills": {
+    "人工智能工程师": [
+      { "skill": "大模型", "frequency": 2, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "agent", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "sql", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "机器学习", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "自然语言处理", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "python", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false }
+    ],
+    "机器视觉工程师": [
+      { "skill": "深度学习", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "c++", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "python", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false }
+    ],
+    "人工智能研发工程师": [
+      { "skill": "c++", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "python", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "计算机视觉", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false }
+    ],
+    "算法工程师": [
+      { "skill": "机器学习", "frequency": 2, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "深度学习", "frequency": 2, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "pytorch", "frequency": 2, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "大模型", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "neo4j", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "自然语言处理", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "tensorflow", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "langchain", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "python", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "java", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "caffe", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "c++", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false }
+    ],
+    "AI软件工程师": [
+      { "skill": "python", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "c++", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "java", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false }
+    ],
+    "AI算法工程师": [
+      { "skill": "python", "frequency": 3, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "深度学习", "frequency": 2, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "强化学习", "frequency": 2, "avgConfidence": 0.72, "isEmerging": true },
+      { "skill": "c++", "frequency": 2, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "计算机视觉", "frequency": 2, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "大模型", "frequency": 2, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "机器学习", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "tensorflow", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "pytorch", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "自然语言处理", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "推荐系统", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "transformer", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "paddlepaddle", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "语音识别", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "agent", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "java", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "go", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false }
+    ],
+    "AI算法工程师助理": [
+      { "skill": "python", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "c++", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "机器学习", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "深度学习", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false }
+    ],
+    "CAE算法工程师": [
+      { "skill": "gnn", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "transformer", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "机器学习", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "python", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "tensorflow", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "pytorch", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "深度学习", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "gpt", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false }
+    ],
+    "智能驾驶算法工程师": [
+      { "skill": "transformer", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "onnx", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "大模型", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "c++", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "python", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "机器学习", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "pytorch", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "tensorflow", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "深度学习", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false },
+      { "skill": "计算机视觉", "frequency": 1, "avgConfidence": 0.62, "isEmerging": false }
+    ]
+  },
+  "categoryStats": {
+    "底层研发": { "jobCount": 0, "jobs": [], "skillCount": 0, "description": "AI基础设施与底层框架开发" },
+    "算法模型": { "jobCount": 9, "jobs": ["人工智能工程师", "机器视觉工程师", "人工智能研发工程师", "算法工程师", "AI软件工程师", "AI算法工程师", "AI算法工程师助理", "CAE算法工程师", "智能驾驶算法工程师"], "skillCount": 24, "description": "核心算法研究与模型训练" },
+    "AI工程落地": { "jobCount": 0, "jobs": [], "skillCount": 0, "description": "AI模型工程化部署与落地应用" },
+    "数据": { "jobCount": 0, "jobs": [], "skillCount": 0, "description": "数据采集、标注、处理与分析" },
+    "硬件": { "jobCount": 0, "jobs": [], "skillCount": 0, "description": "AI芯片与算力硬件" },
+    "产品业务": { "jobCount": 0, "jobs": [], "skillCount": 0, "description": "AI产品设计与业务落地" },
+    "合规运营": { "jobCount": 0, "jobs": [], "skillCount": 0, "description": "AI安全合规与质量保障" },
+    "新兴轻门槛岗": { "jobCount": 0, "jobs": [], "skillCount": 0, "description": "新兴AI应用型低门槛岗位" }
+  },
+  "meta": { "total_nodes": 33, "total_links": 66, "job_count": 9, "skill_count": 24 }
+}

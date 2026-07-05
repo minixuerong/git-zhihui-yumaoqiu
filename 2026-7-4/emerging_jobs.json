@@ -1,0 +1,187 @@
+{
+  "generated_at": "2026-07-04T23:36:24.169587",
+  "total_candidates": 10,
+  "industry_confirmed": 1,
+  "candidates": [
+    {
+      "skill_pair": [
+        "python",
+        "强化学习"
+      ],
+      "growth_rate": 2,
+      "count": 2,
+      "external_authority_score": 0.7,
+      "emergence_score": 0.91,
+      "is_industry_confirmed": true,
+      "status": "建议定义为新兴岗位",
+      "sample_job_titles": [
+        "机器视觉工程师",
+        "AI软件工程师",
+        "算法工程师"
+      ],
+      "reason": "符合行业白皮书/国家标准认定方向；头部科技企业已开始规模化招聘；技能组合 python+强化学习 近期出现频率显著上升"
+    },
+    {
+      "skill_pair": [
+        "大模型",
+        "深度学习"
+      ],
+      "growth_rate": 3,
+      "count": 3,
+      "external_authority_score": 0.2,
+      "emergence_score": 0.76,
+      "is_industry_confirmed": false,
+      "status": "建议定义为新兴岗位",
+      "sample_job_titles": [
+        "机器视觉工程师",
+        "AI软件工程师",
+        "算法工程师"
+      ],
+      "reason": "技能组合 大模型+深度学习 近期出现频率显著上升"
+    },
+    {
+      "skill_pair": [
+        "python",
+        "transformer"
+      ],
+      "growth_rate": 3,
+      "count": 3,
+      "external_authority_score": 0.2,
+      "emergence_score": 0.76,
+      "is_industry_confirmed": false,
+      "status": "建议定义为新兴岗位",
+      "sample_job_titles": [
+        "机器视觉工程师",
+        "AI软件工程师",
+        "算法工程师"
+      ],
+      "reason": "技能组合 python+transformer 近期出现频率显著上升"
+    },
+    {
+      "skill_pair": [
+        "transformer",
+        "深度学习"
+      ],
+      "growth_rate": 3,
+      "count": 3,
+      "external_authority_score": 0.2,
+      "emergence_score": 0.76,
+      "is_industry_confirmed": false,
+      "status": "建议定义为新兴岗位",
+      "sample_job_titles": [
+        "机器视觉工程师",
+        "AI软件工程师",
+        "算法工程师"
+      ],
+      "reason": "技能组合 transformer+深度学习 近期出现频率显著上升"
+    },
+    {
+      "skill_pair": [
+        "pytorch",
+        "大模型"
+      ],
+      "growth_rate": 2,
+      "count": 2,
+      "external_authority_score": 0.2,
+      "emergence_score": 0.76,
+      "is_industry_confirmed": false,
+      "status": "建议定义为新兴岗位",
+      "sample_job_titles": [
+        "机器视觉工程师",
+        "AI软件工程师",
+        "算法工程师"
+      ],
+      "reason": "技能组合 pytorch+大模型 近期出现频率显著上升"
+    },
+    {
+      "skill_pair": [
+        "tensorflow",
+        "大模型"
+      ],
+      "growth_rate": 2,
+      "count": 2,
+      "external_authority_score": 0.2,
+      "emergence_score": 0.76,
+      "is_industry_confirmed": false,
+      "status": "建议定义为新兴岗位",
+      "sample_job_titles": [
+        "机器视觉工程师",
+        "AI软件工程师",
+        "算法工程师"
+      ],
+      "reason": "技能组合 tensorflow+大模型 近期出现频率显著上升"
+    },
+    {
+      "skill_pair": [
+        "transformer",
+        "机器学习"
+      ],
+      "growth_rate": 2,
+      "count": 2,
+      "external_authority_score": 0.2,
+      "emergence_score": 0.76,
+      "is_industry_confirmed": false,
+      "status": "建议定义为新兴岗位",
+      "sample_job_titles": [
+        "机器视觉工程师",
+        "AI软件工程师",
+        "算法工程师"
+      ],
+      "reason": "技能组合 transformer+机器学习 近期出现频率显著上升"
+    },
+    {
+      "skill_pair": [
+        "tensorflow",
+        "transformer"
+      ],
+      "growth_rate": 2,
+      "count": 2,
+      "external_authority_score": 0.2,
+      "emergence_score": 0.76,
+      "is_industry_confirmed": false,
+      "status": "建议定义为新兴岗位",
+      "sample_job_titles": [
+        "机器视觉工程师",
+        "AI软件工程师",
+        "算法工程师"
+      ],
+      "reason": "技能组合 tensorflow+transformer 近期出现频率显著上升"
+    },
+    {
+      "skill_pair": [
+        "pytorch",
+        "transformer"
+      ],
+      "growth_rate": 2,
+      "count": 2,
+      "external_authority_score": 0.2,
+      "emergence_score": 0.76,
+      "is_industry_confirmed": false,
+      "status": "建议定义为新兴岗位",
+      "sample_job_titles": [
+        "机器视觉工程师",
+        "AI软件工程师",
+        "算法工程师"
+      ],
+      "reason": "技能组合 pytorch+transformer 近期出现频率显著上升"
+    },
+    {
+      "skill_pair": [
+        "transformer",
+        "计算机视觉"
+      ],
+      "growth_rate": 2,
+      "count": 2,
+      "external_authority_score": 0.2,
+      "emergence_score": 0.76,
+      "is_industry_confirmed": false,
+      "status": "建议定义为新兴岗位",
+      "sample_job_titles": [
+        "机器视觉工程师",
+        "AI软件工程师",
+        "算法工程师"
+      ],
+      "reason": "技能组合 transformer+计算机视觉 近期出现频率显著上升"
+    }
+  ]
+}
