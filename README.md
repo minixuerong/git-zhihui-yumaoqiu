@@ -450,3 +450,16 @@ python -m pytest tests/test_api.py -v
 ## License
 
 MIT License
+
+基于 models.py ，每个表的作用：
+
+表名 说明 users 普通用户（注册登录），关联简历上传、人岗匹配
+ admins 管理员账号，独立于 users 表 job_categories 岗位分类（如"算法模型""数据"等），支持父子层级，对应图谱 categories jobs 岗位表 ，核心实体。含名称、编码、分类、职责、场景、状态、数据来源等，关联能力需求、演化、匹配记录 skills 技能表 ，核心实体。含名称、编码、分类、描述，被能力需求、简历技能引用 
+ capability_requirements 能力需求表 ——岗位与技能的 关联关系 。记录每个岗位需要什么技能、要求类型（必须/优先）、等级、重要度评分。这就是图谱 links 的数据源 
+ resumes 简历表。存文件名、路径、解析内容、AI 解析结果、状态 
+ resume_skills 简历技能中间表。记录每份简历解析出的技能及熟练度 
+ match_records 人岗匹配记录。存简历与岗位的匹配得分、差距分析、学习建议 
+ job_evolutions 岗位演化记录。跟踪岗位变更历史（新增/更新/删除/分类变更） 
+ jd_data_sources JD 数据源配置。管理从哪些招聘网站抓取岗位描述 
+ crawl_tasks 爬虫任务记录。跟踪每个采集任务的来源、状态、时间 
+ ai_analysis_results AI 分析结果。存对岗位的 AI 分析结论、置信度、模型版本

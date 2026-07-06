@@ -5,7 +5,7 @@ import os
 
 from . import models
 from .database import engine
-from .routers import users, jobs, skills, resumes, match, crawler, cleaner, analysis, admin
+from .routers import users, jobs, skills, resumes, match, crawler, cleaner, analysis, admin, graph, capabilities
 
 load_dotenv()
 
@@ -38,6 +38,8 @@ app.include_router(crawler.router)
 app.include_router(cleaner.router)
 app.include_router(analysis.router)
 app.include_router(admin.router)
+app.include_router(graph.router)
+app.include_router(capabilities.router)
 
 @app.get("/")
 def read_root():

@@ -79,6 +79,7 @@ const isCollapsed = ref(false)
 
 const menuItems = [
   { key: 'dashboard', label: '数据概览', icon: '' },
+  { key: 'graph-management', label: '能力图谱', icon: '' },
   { key: 'job-management', label: '岗位数据管理', icon: '' },
   { key: 'skill-management', label: '技能数据管理', icon: '' },
   { key: 'user-management', label: '用户管理', icon: '' }

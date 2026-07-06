@@ -11,7 +11,7 @@ router = APIRouter(prefix="/api/v1/jobs", tags=["jobs"])
 @router.get("/", response_model=schemas.PaginatedResponse)
 def read_jobs(
     skip: int = Query(0, ge=0),
-    limit: int = Query(10, ge=1, le=100),
+    limit: int = Query(10, ge=1, le=2000),
     category_id: int = None,
     status: str = None,
     keyword: str = None,

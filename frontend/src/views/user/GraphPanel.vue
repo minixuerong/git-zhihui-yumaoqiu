@@ -2,11 +2,15 @@
   <div class="graph-panel">
     <div class="header">
       <div>
-        <h1>能力图谱</h1>
+        <h1>全景图谱</h1>
         <p>可视化展示岗位与技能之间的关联关系</p>
       </div>
       <div class="category-filter">
-        <el-select v-model="selectedCategory" placeholder="选择分类" @change="onCategoryChange">
+        <el-select v-model="selectedJob" placeholder="选择岗位" @change="onJobChange" style="margin-right:10px;width:200px">
+          <el-option label="全部岗位" value="all" />
+          <el-option v-for="job in graphJobs" :key="job.name" :label="job.name" :value="job.name" />
+        </el-select>
+        <el-select v-model="selectedCategory" placeholder="选择分类" @change="onCategoryChange" style="width:150px">
           <el-option label="全部" value="all" />
           <el-option v-for="cat in categories" :key="cat.name" :label="cat.name" :value="cat.name" />
         </el-select>
@@ -65,7 +69,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed, nextTick, watch } from 'vue'
 import * as echarts from 'echarts'
-import graphData from '@/assets/graph_data.json'
+import { getGraphData } from '@/api/graph'
 
 interface Node {
   id: string
@@ -74,23 +78,40 @@ interface Node {
   categoryName?: string
   symbolSize: number
   value: number
-  isEmerging?: boolean
 }
 
 interface SkillInfo {
-  skill: string
-  frequency: number
-  avgConfidence: number
-  isEmerging: boolean
+  name: string
+  importance: number
+  count: number
+}
+
+interface LinkData {
+  source: string
+  target: string
+  value: number
+  confidence?: number
+}
+
+interface GraphData {
+  categories: Array<{ name: string; description: string }>
+  nodes: Node[]
+  links: LinkData[]
+  jobSkills: Record<string, SkillInfo[]>
+  categoryStats: Array<{ name: string; jobs: number; skills: number }>
+  meta: { totalNodes: number; totalLinks: number; totalCategories: number; generatedAt: string }
 }
 
 const chartRef = ref<HTMLDivElement | null>(null)
 let chartInstance: echarts.ECharts | null = null
 let observer: MutationObserver | null = null
 
-const categories = computed(() => graphData.categories)
+const graphData = ref<GraphData | null>(null)
+const loading = ref(false)
 
-const categoryNames = computed(() => graphData.categories.map(c => c.name))
+const categories = computed(() => graphData.value?.categories || [])
+
+const categoryNames = computed(() => categories.value.map(c => c.name))
 
 const categoryColors = [
   '#5470c6',
@@ -105,32 +126,63 @@ const categoryColors = [
 ]
 
 const selectedCategory = ref('all')
+const selectedJob = ref('all')
 const selectedNode = ref<Node | null>(null)
+
+const graphJobs = computed(() => {
+  if (!graphData.value) return []
+  return graphData.value.nodes.filter((n: Node) => n.category !== 8)
+})
 const relatedSkills = computed<SkillInfo[]>(() => {
-  if (!selectedNode.value || selectedNode.value.category === 8) return []
-  return (graphData.jobSkills as Record<string, SkillInfo[]>)[selectedNode.value.name] || []
+  if (!selectedNode.value || !graphData.value || selectedNode.value.category === 8) return []
+  return graphData.value.jobSkills[selectedNode.value.name] || []
 })
 
 const filteredData = computed(() => {
-  if (selectedCategory.value === 'all') {
-    return {
-      nodes: graphData.nodes,
-      links: graphData.links
+  if (!graphData.value) return { nodes: [], links: [] }
+  const d = graphData.value
+  
+  // 先按岗位筛选
+  let filteredNodes = d.nodes
+  if (selectedJob.value !== 'all') {
+    const jobNode = d.nodes.find(n => n.name === selectedJob.value)
+    if (jobNode) {
+      const linkedSkillIds = new Set<string>()
+      d.links.forEach(link => {
+        if (link.source === jobNode.id) linkedSkillIds.add(link.target)
+        if (link.target === jobNode.id) linkedSkillIds.add(link.source)
+      })
+      filteredNodes = d.nodes.filter(n => n.id === jobNode.id || linkedSkillIds.has(n.id))
     }
   }
-  const catIndex = graphData.categories.findIndex(c => c.name === selectedCategory.value)
-  const filteredNodes = graphData.nodes.filter(node => {
-    if (catIndex === 8) {
-      return node.category === 8
-    }
-    return node.category === catIndex || node.category === 8
-  })
+  
+  // 再按分类筛选
+  if (selectedCategory.value !== 'all') {
+    const catIndex = categories.value.findIndex(c => c.name === selectedCategory.value)
+    filteredNodes = filteredNodes.filter(node => {
+      if (catIndex === 8) return node.category === 8
+      return node.category === catIndex || node.category === 8
+    })
+  }
+  
   const nodeIds = new Set(filteredNodes.map(n => n.id))
-  const filteredLinks = graphData.links.filter(link => 
-    nodeIds.has(link.source as string) && nodeIds.has(link.target as string)
+  const filteredLinks = d.links.filter(link => 
+    nodeIds.has(link.source) && nodeIds.has(link.target)
   )
   return { nodes: filteredNodes, links: filteredLinks }
 })
+
+function onJobChange() {
+  selectedCategory.value = 'all'
+  selectedNode.value = null
+  initChart()
+}
+
+function onCategoryChange() {
+  selectedJob.value = 'all'
+  selectedNode.value = null
+  initChart()
+}
 
 function initChart() {
   if (!chartRef.value) return
@@ -164,10 +216,9 @@ function initChart() {
         if (params.dataType === 'node') {
           const node = params.data as Node
           const type = node.category === 8 ? '技能' : '岗位'
-          const emerging = node.isEmerging ? '<br/>📈 新兴技能' : ''
-          return `<strong>${node.name}</strong><br/>类型: ${type}<br/>关联数: ${node.value}${emerging}`
+          return `<strong>${node.name}</strong><br/>类型: ${type}<br/>关联数: ${node.value}`
         } else {
-          return `${params.data.source} → ${params.data.target}<br/>权重: ${params.data.value}`
+          return `${params.data.jobName || params.data.source} → ${params.data.skillName || params.data.target}<br/>权重: ${params.data.value}`
         }
       }
     },
@@ -219,7 +270,7 @@ function initChart() {
             color: '#ccc'
           }
         })),
-        categories: graphData.categories.map((cat, index) => ({
+        categories: categories.value.map((cat, index) => ({
           name: cat.name,
           itemStyle: {
             color: categoryColors[index]
@@ -264,12 +315,6 @@ function initChart() {
   })
 }
 
-function onCategoryChange() {
-  nextTick(() => {
-    initChart()
-  })
-}
-
 function handleResize() {
   nextTick(() => {
     if (chartInstance) {
@@ -294,7 +339,17 @@ function checkVisibility() {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
+  try {
+    loading.value = true
+    const data = await getGraphData() as any
+    graphData.value = data as GraphData
+  } catch (e) {
+    console.error('加载图谱数据失败:', e)
+  } finally {
+    loading.value = false
+  }
+  
   nextTick(() => {
     checkVisibility()
   })
